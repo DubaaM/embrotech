@@ -1,0 +1,314 @@
+{
+  "common": {
+    "companyName": "Embrotech"
+  },
+  "navigation": {
+    "label": "Hlavná navigácia",
+    "openMenu": "Otvoriť menu",
+    "closeMenu": "Zavrieť menu",
+    "home": "Domov",
+    "about": "O nás",
+    "production": "Výroba",
+    "examples": "Príklady",
+    "news": "Novinky",
+    "contact": "Kontakt"
+  },
+  "language": {
+    "label": "Vybrať jazyk",
+    "slovakShort": "SK",
+    "englishShort": "EN"
+  },
+  "theme": {
+    "dark": "Tmavá",
+    "light": "Svetlá",
+    "switchToDark": "Prepnúť na tmavú tému",
+    "switchToLight": "Prepnúť na svetlú tému"
+  },
+  "footer": {
+    "copyright": "© {{year}} Embrotech. Všetky práva vyhradené."
+  },
+  "home": {
+    "title": "Výšivka, ktorá dá textilu osobitý",
+    "titleAccent": "charakter",
+    "hero": {
+      "description": "Strojovo vyšívame logá a motívy na pracovné aj reklamné textílie s dôrazom na každý detail.",
+      "workLink": "Pozrieť našu prácu",
+      "contactLink": "Kontaktujte nás"
+    },
+    "gallery": {
+      "title": "Výšivka zblízka",
+      "description": "Pozrite si detaily výšiviek, ktoré vznikajú na pracovnom a reklamnom textile.",
+      "openPhoto": "Zobraziť fotografiu: {{caption}}",
+      "closeLightbox": "Zavrieť fotografiu",
+      "allExamples": "Pozrieť všetky príklady",
+      "defaultPhoto": {
+        "alt": "Detail strojovej výšivky na textile",
+        "caption": "Detail strojovej výšivky"
+      },
+      "photos": {
+        "bmw": {
+          "alt": "Biela a modrá výšivka na tmavom textile",
+          "caption": "Farebná výšivka na tmavom textile"
+        },
+        "animal": {
+          "alt": "Detail farebnej zvieracej výšivky na svetlej látke",
+          "caption": "Zvierací motív vyšitý na svetlej látke"
+        },
+        "adidas": {
+          "alt": "Čierny vyšívaný motív na svetlom textile",
+          "caption": "Čierna výšivka na svetlom textile"
+        },
+        "shield": {
+          "alt": "Farebný vyšívaný znak na tmavom textile",
+          "caption": "Farebný znak vyšitý na tmavom textile"
+        },
+        "nike": {
+          "alt": "Biela výšivka na tmavom textile",
+          "caption": "Biela výšivka na tmavom textile"
+        },
+        "shell": {
+          "alt": "Čierna výšivka na svetlom textile",
+          "caption": "Čierna výšivka na svetlom textile"
+        }
+      }
+    },
+    "why": {
+      "title": "Prečo Embrotech",
+      "facts": [
+        {
+          "value": "22",
+          "description": "Vyšívacích hláv pre efektívnu a precíznu výrobu."
+        },
+        {
+          "value": "Malé aj veľké",
+          "description": "Série prispôsobíme vašim potrebám."
+        },
+        {
+          "value": "Spoľahlivo",
+          "description": "Dohodnuté termíny a starostlivo spracované objednávky."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Máte vlastný motív?",
+      "description": "Radi s vami preberieme možnosti strojovej výšivky na pracovné alebo reklamné textílie.",
+      "button": "Kontaktujte nás"
+    }
+  },
+  "contact": {
+    "title": "Kontaktujte nás",
+    "description": "Napíšte nám, akú výšivku hľadáte na pracovný alebo reklamný textil. Radi s vami preberieme váš dopyt.",
+    "form": {
+      "title": "Napíšte nám",
+      "name": "Meno",
+      "email": "E-mail",
+      "phone": "Telefón (nepovinné)",
+      "subject": "Predmet (nepovinné)",
+      "message": "Správa",
+      "consentBefore": "Súhlasím so spracovaním svojich osobných údajov na účel zodpovedania môjho dopytu. Viac informácií nájdete v",
+      "privacyLink": "informáciách o ochrane osobných údajov",
+      "submit": "Odoslať správu",
+      "submitting": "Odosielam…",
+      "successMessage": "Ďakujeme. Vaša správa bola odoslaná.",
+      "errorMessage": "Správu sa nepodarilo odoslať. Skúste to znova.",
+      "errors": {
+        "required": "Toto pole je povinné.",
+        "email": "Zadajte platnú e-mailovú adresu.",
+        "messageLength": "Správa musí obsahovať aspoň 10 znakov.",
+        "consent": "Na odoslanie súhlaste so spracovaním osobných údajov."
+      }
+    },
+    "info": {
+      "title": "Kontaktné údaje",
+      "addressLabel": "Adresa",
+      "addressValue": "Hlavná č.d.535, 925 81 Diakovce",
+      "phoneLabel": "Telefón",
+      "phoneValue": "00421 31 701 4901",
+      "emailLabel": "E-mail",
+      "emailValue": " embrotech@embrotech.sk",
+      "hoursLabel": "Otváracie hodiny",
+      "hoursValue": "Po-Pia: 8:00–16:00"
+    },
+    "map": {
+      "title": "Kde nás nájdete",
+      "iframeTitle": "Mapa Google s adresou spoločnosti Embrotech"
+    }
+  },
+  "sandbox": {
+    "navLabel": "Skúšobňa",
+    "title": "Skúšobňa",
+    "description": "Nahrajte logo alebo obrázok a pozrite si ilustračný náhľad strojovej výšivky na textile.",
+    "illustrationNote": "Najlepšie fungujú jednoduché logá s plochými farbami. Ide o ilustračnú ukážku; skutočný výsledok sa môže líšiť.",
+    "upload": {
+      "title": "Nahrajte logo alebo obrázok",
+      "dropPrompt": "Presuňte sem obrázok alebo kliknutím vyberte súbor",
+      "dropActive": "Pustite obrázok a vytvorte náhľad",
+      "bestResult": "Najlepší výsledok: logo vo formáte SVG",
+      "transparentPngTip": "Pri PNG použite priehľadné pozadie.",
+      "fileHint": "SVG max. 2 MB · PNG, JPG, WebP max. 5 MB",
+      "rasterQualityHint": "Náhľad JPG a WebP môže byť menej ostrý.",
+      "thumbnailAlt": "Náhľad nahraného obrázka",
+      "sampleButton": "Vyskúšať ukážku"
+    },
+    "controls": {
+      "threadColors": "Počet farieb nití",
+      "fabric": "Farba látky",
+      "density": "Hustota výšivky",
+      "quality": "Kvalita",
+      "qualityOptions": {
+        "simple": "Jednoduchá",
+        "realistic": "Realistická"
+      },
+      "relief": "Plastickosť",
+      "reliefSimpleNote": "Plastickosť je dostupná pri realistickej kvalite.",
+      "densityOptions": {
+        "fine": "Jemná",
+        "medium": "Stredná",
+        "coarse": "Hrubá"
+      },
+      "whiteBackground": "Považovať takmer biele odtiene za pozadie",
+      "svgWhiteBackgroundNote": "Pri SVG sa ako pozadie použije priehľadnosť; biela zostáva farbou nite.",
+      "download": "Stiahnuť náhľad",
+      "reset": "Resetovať"
+    },
+    "colorEditor": {
+      "title": "Farby loga",
+      "reset": "Obnoviť farby",
+      "changeColor": "Zmeniť farbu {{color}}",
+      "changeColorNamed": "Zmeniť farbu {{color}} na odtieň {{name}}",
+      "palette": "Paleta farieb nití",
+      "custom": "Vlastná farba",
+      "noEditableColors": "Nenašli sa upraviteľné farby výplne ani obrysu.",
+      "uneditableNote": "Farby definované v blokoch štýlov alebo CSS triedach tu nemožno upraviť.",
+      "limitNote": "Zobrazuje sa prvých 12 farieb loga."
+    },
+    "fabrics": {
+      "cream": "Krémová",
+      "black": "Čierna",
+      "navy": "Tmavomodrá",
+      "white": "Biela",
+      "brown": "Tmavohnedá"
+    },
+    "result": {
+      "title": "Náhľad výšivky",
+      "empty": "Náhľad výšivky sa zobrazí tu.",
+      "canvasLabel": "Náhľad výšivky na látke: {{fabric}}",
+      "svgTextNote": "Ak text vyzerá inak, pred exportom SVG ho v grafickom programe preveďte na krivky."
+    },
+    "status": {
+      "processing": "Spracúva sa…",
+      "done": "Náhľad je pripravený.",
+      "previewUpdated": "Náhľad bol aktualizovaný."
+    },
+    "errors": {
+      "fileType": "Vyberte súbor SVG, PNG, JPG alebo WebP so zodpovedajúcim typom súboru.",
+      "svgFileSize": "Súbor SVG môže mať najviac 2 MB.",
+      "rasterFileSize": "Súbor PNG, JPG alebo WebP môže mať najviac 5 MB.",
+      "svgUnsupported": "Toto SVG obsahuje nepodporované prvky.",
+      "svgInvalid": "Súbor SVG nie je platný. Musí sa začínať prvkom <svg>.",
+      "svgDimensions": "SVG musí mať šírku a výšku alebo platný atribút viewBox.",
+      "svgRender": "Náhľad SVG sa nepodarilo načítať alebo je prázdny. Pred exportom preveďte text na krivky; filtre a prechody sa môžu zobraziť inak.",
+      "imageRead": "Obrázok sa nepodarilo načítať. Skúste iný súbor.",
+      "sample": "Ukážkový obrázok sa nepodarilo načítať.",
+      "processing": "Náhľad sa nepodarilo vytvoriť. Skúste iný obrázok.",
+      "download": "Náhľad sa nepodarilo stiahnuť. Skúste to znova."
+    },
+    "quoteButton": "Požiadať o cenovú ponuku",
+    "emailNoteBefore": "Pre presnejšiu cenovú ponuku pošlite logo na",
+    "emailNoteAfter": ".",
+    "privacyNote": "Obrázok sa spracuje vo vašom prehliadači a neodošle sa ani neuloží."
+  },
+  "privacy": {
+    "title": "Informácie o ochrane osobných údajov",
+    "description": "Táto stránka je zatiaľ len zástupným miestom pre informácie o spracúvaní osobných údajov spoločnosťou Embrotech. Pred zverejnením webovej stránky doplňte a skontrolujte konečné znenie."
+  },
+  "examples": {
+    "title": "Ukážky výšiviek",
+    "description": "Výber strojových výšiviek na pracovnom a reklamnom textile.",
+    "photoAlt": "{{title}} – {{angle}}",
+    "openPhoto": "Zobraziť {{angle}}: {{title}}",
+    "gallery": {
+      "label": "Galéria fotografií: {{title}}",
+      "previous": "Predchádzajúca fotografia",
+      "next": "Nasledujúca fotografia",
+      "photoCounter": "{{current}} / {{total}}",
+      "photoAnnouncement": "Fotografia {{current}} z {{total}}"
+    },
+    "angles": {
+      "front": "Predná strana",
+      "side": "Bočná strana",
+      "back": "Zadná strana",
+      "detail": "Detail"
+    },
+    "lightbox": {
+      "close": "Zavrieť fotografiu",
+      "previous": "Predchádzajúca fotografia",
+      "next": "Nasledujúca fotografia",
+      "counter": "{{current}} / {{total}}"
+    },
+    "logoPlaceholder": "Zástupné zobrazenie loga klienta: {{clientName}}",
+    "empty": "V tejto kategórii zatiaľ nie sú žiadne ukážky.",
+    "priceDisclaimer": "Uvedené ceny sú ilustračné a môžu sa meniť podľa množstva, veľkosti a počtu stehov.",
+    "priceNote": "Cena za kus bez DPH.",
+    "filters": {
+      "label": "Filtrovať ukážky podľa textilu",
+      "all": "Všetko",
+      "tshirt": "Tričká",
+      "cap": "Šiltovky",
+      "jacket": "Bundy",
+      "other": "Ostatné"
+    },
+    "garments": {
+      "tshirt": "Tričko",
+      "cap": "Šiltovka",
+      "jacket": "Bunda",
+      "other": "Ostatné"
+    },
+    "details": {
+      "stitches": "Počet stehov",
+      "size": "Rozmer"
+    },
+    "contact": {
+      "title": "Chceli by ste niečo podobné?",
+      "description": "Povedzte nám o svojom nápade a preberieme možnosti výšivky na váš textil.",
+      "button": "Kontaktujte nás"
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Domov",
+      "description": "Strojovým vyšívaním dopĺňame pracovné a reklamné textílie o logá, nápisy a motívy, ktoré pomáhajú značkám vyniknúť.",
+      "cta": "Pozrieť príklady"
+    },
+    "about": {
+      "title": "O nás",
+      "description": "Embrotech sa venuje strojovému vyšívaniu na pracovné a reklamné textílie s dôrazom na precízne spracovanie každého motívu.",
+      "cta": "Kontaktujte nás"
+    },
+    "production": {
+      "title": "Výroba",
+      "description": "Pri výrobe pripravíme motív na vyšívanie a následne ho prenesieme na textil tak, aby bol výsledok čistý a trvácny.",
+      "cta": "Pozrieť príklady"
+    },
+    "examples": {
+      "title": "Príklady",
+      "description": "Prezrite si ukážky strojového vyšívania na pracovnom oblečení, reklamnom textile a ďalších výrobkoch.",
+      "cta": "Opýtať sa na výšivku"
+    },
+    "news": {
+      "title": "Novinky",
+      "description": "Novinky priblížia dianie v Embrotechu, nové možnosti vyšívania a zaujímavosti zo sveta textilnej výšivky.",
+      "cta": "Spoznajte Embrotech"
+    },
+    "contact": {
+      "title": "Kontakt",
+      "description": "Máte záujem o strojovú výšivku na pracovný alebo reklamný textil? Ozvite sa nám a porozprávame sa o vašom motíve.",
+      "cta": "Pozrieť príklady"
+    }
+  },
+  "notFound": {
+    "title": "Stránka sa nenašla",
+    "description": "Požadovaná stránka neexistuje.",
+    "homeLink": "Prejsť na úvodnú stránku"
+  }
+}

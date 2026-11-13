@@ -1,0 +1,28 @@
+{
+  "title": {
+    "sk": "Výšivka na šiltovke",
+    "en": "Embroidered design on a cap"
+  },
+  "description": {
+    "sk": "Ukážková výšivka na šiltovke, navrhnutá tak, aby bol aj menší motív jasný a dobre čitateľný.",
+    "en": "A sample cap embroidery created to keep a small design crisp and easy to recognize."
+  },
+  "clientName": "Klient 02",
+  "logo": "/uploads/logos/Amazon-Logo.jpg",
+  "photos": [
+    {
+      "image": "/uploads/examples/Amazon-2.jpg",
+      "angle": "front"
+    },
+    {
+      "image": "/uploads/examples/Amazon-1.jpg",
+      "angle": "side"
+    }
+  ],
+  "garment": "cap",
+  "stitchCount": 6800,
+  "size": "6 x 4 cm",
+  "price": 1.65,
+  "order": 2,
+  "published": true
+}

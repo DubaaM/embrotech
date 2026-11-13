@@ -1,1 +1,327 @@
 @import "tailwindcss";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-border: var(--border);
+
+  --animate-fade-in-up: fade-in-up 300ms ease-out both;
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+}
+
+:root {
+  color-scheme: light;
+  --bg: #FEF3E2;        /* cream */
+  --surface: #FBE6C7;   /* slightly darker cream for cards */
+  --text: #2A1A0E;      /* dark brown */
+  --muted: color-mix(in srgb, var(--text) 85%, var(--brand) 15%);
+  --brand: #D4621A;     /* orange */
+  --on-brand: #2A1A0E;  /* text on orange buttons */
+  --border: #E8D3B5;
+  --bg-top: var(--bg);
+  --bg-mid: color-mix(in srgb, var(--brand) 18%, var(--bg));
+  --bg-bottom: color-mix(in srgb, var(--brand) 55%, var(--text));
+  --glass-bg: rgb(255 255 255 / 0.4);
+  --glass-border: rgb(255 255 255 / 0.55);
+  --glass-strong-bg: rgb(255 255 255 / 0.74);
+  --glass-fallback-bg: rgb(255 255 255 / 0.85);
+  --glass-strong-fallback-bg: rgb(255 255 255 / 0.92);
+  --glass-opaque-bg: var(--bg-top);
+  --glow-orange-top: color-mix(in srgb, var(--brand) 35%, transparent);
+  --glow-cream: color-mix(in srgb, #FEF3E2 30%, transparent);
+  --glow-orange-bottom: color-mix(in srgb, var(--brand) 25%, transparent);
+}
+
+:root[data-theme='dark'],
+:root.dark {
+  color-scheme: dark;
+  --bg: #2A1A0E;
+  --surface: #2A1A0E;
+  --text: #FEF3E2;
+  --muted: #C9B59C;
+  --brand: #D4621A;
+  --on-brand: #2A1A0E;
+  --border: #4D3420;
+  --bg-top: #1A0F07;
+  --bg-mid: var(--on-brand);
+  --bg-bottom: color-mix(in srgb, var(--brand) 35%, var(--on-brand));
+  --glass-bg: rgb(42 26 14 / 0.45);
+  --glass-border: rgb(254 243 226 / 0.14);
+  --glass-strong-bg: rgb(42 26 14 / 0.72);
+  --glass-fallback-bg: rgb(42 26 14 / 0.85);
+  --glass-strong-fallback-bg: rgb(42 26 14 / 0.92);
+  --glass-opaque-bg: var(--on-brand);
+  --glow-orange-top: color-mix(in srgb, var(--brand) 22%, transparent);
+  --glow-cream: color-mix(in srgb, #FEF3E2 20%, transparent);
+  --glow-orange-bottom: color-mix(in srgb, var(--brand) 20%, transparent);
+}
+
+:root[data-theme='dark'] .home-hero-contact,
+:root.dark .home-hero-contact {
+  border-color: #000;
+  background-color: #000;
+  color: #fff;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+body::before,
+body::after {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+
+body::before {
+  background: linear-gradient(
+    to bottom,
+    var(--bg-top),
+    var(--bg-mid),
+    var(--bg-bottom)
+  );
+}
+
+body::after {
+  filter: blur(60px);
+  background:
+    radial-gradient(
+      circle 40vw at 85% 8%,
+      var(--glow-orange-top),
+      transparent 72%
+    ),
+    radial-gradient(
+      circle 34vw at 10% 48%,
+      var(--glow-cream),
+      transparent 74%
+    ),
+    radial-gradient(
+      circle 40vw at 82% 100%,
+      var(--glow-orange-bottom),
+      transparent 72%
+    );
+}
+
+.glass,
+.glass-strong {
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / 0.35);
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.glass-strong {
+  background: var(--glass-strong-bg);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass {
+    background: var(--glass-fallback-bg);
+  }
+
+  .glass-strong {
+    background: var(--glass-strong-fallback-bg);
+  }
+}
+
+@media (max-width: 768px) {
+  .glass,
+  .glass-strong {
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong {
+    background: var(--glass-opaque-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.page-content > .bg-bg {
+  background-color: transparent;
+}
+
+.home-hero-title {
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.15);
+}
+
+.sewn-word-wrap {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.sewn-word-outline {
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+  color: transparent;
+  pointer-events: none;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--muted) 35%, white);
+}
+
+.sewn-word {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.sewn-letter {
+  display: inline-block;
+  animation-duration: 16.72s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-delay: var(--letter-delay);
+  animation-fill-mode: both;
+}
+
+.sewn-letter {
+  color: transparent;
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--brand) 0 1px,
+    color-mix(in srgb, var(--text) 65%, black) 1px 2px,
+    color-mix(in srgb, var(--text) 70%, white) 2px 3px
+  );
+  background-size: 3px 3px;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 0.5px color-mix(in srgb, var(--brand) 65%, black);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+  clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
+  animation-name: sew-letter;
+}
+
+.sewn-outline-letter {
+  display: inline-block;
+  opacity: 0.45;
+}
+
+@supports not (background-clip: text) {
+  .sewn-letter {
+    color: var(--brand);
+    background-image: none;
+    -webkit-text-stroke: 0;
+  }
+}
+
+/* 1.52s steps align the first fade with letter 8 and restart with the fifth's fade. */
+@keyframes sew-letter {
+  0% {
+    clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
+    opacity: 0;
+    animation-timing-function: ease-in-out;
+  }
+
+  9.09% {
+    clip-path: polygon(0 0, 200% 0, 100% 100%, -100% 100%);
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+
+  63.64% {
+    clip-path: polygon(0 0, 200% 0, 100% 100%, -100% 100%);
+    opacity: 1;
+    animation-timing-function: ease-in-out;
+  }
+
+  72.73% {
+    clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
+    opacity: 0;
+  }
+
+  100% {
+    clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sewn-letter {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.stitch-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.stitch-frame::after {
+  position: absolute;
+  inset: 8px;
+  border: 2px dashed var(--brand);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25);
+  content: "";
+  pointer-events: none;
+}
+
+.satin-frame {
+  position: relative;
+  padding: 6px;
+  border-radius: 0.75rem;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--brand) 0 2px,
+    color-mix(in srgb, var(--brand) 70%, black) 3px 4px
+  );
+}
+
+.satin-frame > img {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.fabric-cream {
+  background-color: #FEF3E2;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgb(42 26 14 / 0.045) 0 1px,
+      transparent 1px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.5) 0 1px,
+      transparent 1px 4px
+    );
+}

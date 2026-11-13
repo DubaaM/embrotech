@@ -1,0 +1,314 @@
+{
+  "common": {
+    "companyName": "Embrotech"
+  },
+  "navigation": {
+    "label": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "home": "Home",
+    "about": "About us",
+    "production": "Production",
+    "examples": "Examples",
+    "news": "News",
+    "contact": "Contact"
+  },
+  "language": {
+    "label": "Choose language",
+    "slovakShort": "SK",
+    "englishShort": "EN"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "switchToDark": "Switch to dark theme",
+    "switchToLight": "Switch to light theme"
+  },
+  "footer": {
+    "copyright": "© {{year}} Embrotech. All rights reserved."
+  },
+  "home": {
+    "title": "Embroidery that gives textiles a distinct",
+    "titleAccent": "character",
+    "hero": {
+      "description": "We machine-embroider logos and designs on workwear and promotional textiles, paying attention to every detail.",
+      "workLink": "See our work",
+      "contactLink": "Contact us"
+    },
+    "gallery": {
+      "title": "A closer look at embroidery",
+      "description": "Explore the details of embroidery made for workwear and promotional textiles.",
+      "openPhoto": "View photo: {{caption}}",
+      "closeLightbox": "Close photo",
+      "allExamples": "See all examples",
+      "defaultPhoto": {
+        "alt": "Close-up of machine embroidery on fabric",
+        "caption": "Machine embroidery detail"
+      },
+      "photos": {
+        "bmw": {
+          "alt": "White and blue embroidery on dark fabric",
+          "caption": "Colorful embroidery on dark fabric"
+        },
+        "animal": {
+          "alt": "Close-up of colorful animal embroidery on light fabric",
+          "caption": "An animal design embroidered on light fabric"
+        },
+        "adidas": {
+          "alt": "Black embroidered design on light fabric",
+          "caption": "Black embroidery on light fabric"
+        },
+        "shield": {
+          "alt": "Colorful embroidered crest on dark fabric",
+          "caption": "A colorful crest embroidered on dark fabric"
+        },
+        "nike": {
+          "alt": "White embroidery on dark fabric",
+          "caption": "White embroidery on dark fabric"
+        },
+        "shell": {
+          "alt": "Black embroidery on light fabric",
+          "caption": "Black embroidery on light fabric"
+        }
+      }
+    },
+    "why": {
+      "title": "Why Embrotech",
+      "facts": [
+        {
+          "value": "22",
+          "description": "Embroidery heads for precise and efficient production."
+        },
+        {
+          "value": "Small or large",
+          "description": "Order sizes tailored to your needs."
+        },
+        {
+          "value": "Reliable",
+          "description": "Agreed timelines and carefully finished orders."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Have a design in mind?",
+      "description": "We would be happy to discuss machine embroidery for your workwear or promotional textiles.",
+      "button": "Contact us"
+    }
+  },
+  "contact": {
+    "title": "Contact us",
+    "description": "Tell us what you have in mind for embroidered workwear or promotional textiles. We will be happy to discuss your enquiry.",
+    "form": {
+      "title": "Send us a message",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "subject": "Subject (optional)",
+      "message": "Message",
+      "consentBefore": "I agree to the processing of my personal data for the purpose of answering my enquiry. For details, see the",
+      "privacyLink": "privacy information",
+      "submit": "Send message",
+      "submitting": "Sending…",
+      "successMessage": "Thank you. Your message has been sent.",
+      "errorMessage": "We could not send your message. Please try again.",
+      "errors": {
+        "required": "This field is required.",
+        "email": "Enter a valid email address.",
+        "messageLength": "Your message must be at least 10 characters long.",
+        "consent": "Please agree to the processing of your personal data."
+      }
+    },
+    "info": {
+      "title": "Company details",
+      "addressLabel": "Address",
+      "addressValue": "Hlavná č.d.535, 925 81 Diakovce",
+      "phoneLabel": "Phone",
+      "phoneValue": "00421 31 701 4901",
+      "emailLabel": "Email",
+      "emailValue": " embrotech@embrotech.sk",
+      "hoursLabel": "Opening hours",
+      "hoursValue": "Mon-Fri: 8:00–16:00"
+    },
+    "map": {
+      "title": "Find us",
+      "iframeTitle": "Google map showing the Embrotech address"
+    }
+  },
+  "sandbox": {
+    "navLabel": "Try it",
+    "title": "Try it",
+    "description": "Upload a logo or image to see an illustrative machine-embroidered preview on fabric.",
+    "illustrationNote": "Works best with simple logos with flat colors. This is an illustrative preview, the real result may differ.",
+    "upload": {
+      "title": "Upload your logo or image",
+      "dropPrompt": "Drop an image here or choose a file",
+      "dropActive": "Drop your image to create a preview",
+      "bestResult": "Best result: SVG logo",
+      "transparentPngTip": "For PNG, use a transparent background.",
+      "fileHint": "SVG up to 2 MB · PNG, JPG, WebP up to 5 MB",
+      "rasterQualityHint": "JPG and WebP previews may look less crisp.",
+      "thumbnailAlt": "Uploaded image thumbnail",
+      "sampleButton": "Try with a sample"
+    },
+    "controls": {
+      "threadColors": "Thread colors",
+      "fabric": "Fabric color",
+      "density": "Stitch density",
+      "quality": "Quality",
+      "qualityOptions": {
+        "simple": "Simple",
+        "realistic": "Realistic"
+      },
+      "relief": "Relief",
+      "reliefSimpleNote": "Relief is available in Realistic quality.",
+      "densityOptions": {
+        "fine": "Fine",
+        "medium": "Medium",
+        "coarse": "Coarse"
+      },
+      "whiteBackground": "Treat near-white shades as background",
+      "svgWhiteBackgroundNote": "SVG transparency is used as the background; white pixels stay as thread color.",
+      "download": "Download preview",
+      "reset": "Reset"
+    },
+    "colorEditor": {
+      "title": "Logo colors",
+      "reset": "Reset colors",
+      "changeColor": "Change color {{color}}",
+      "changeColorNamed": "Change color {{color}} to {{name}}",
+      "palette": "Thread color palette",
+      "custom": "Custom color",
+      "noEditableColors": "No editable fill or stroke colors were found.",
+      "uneditableNote": "Colors defined in style blocks or CSS classes can't be edited here.",
+      "limitNote": "Only the first 12 logo colors are shown."
+    },
+    "fabrics": {
+      "cream": "Cream",
+      "black": "Black",
+      "navy": "Navy",
+      "white": "White",
+      "brown": "Dark brown"
+    },
+    "result": {
+      "title": "Embroidery preview",
+      "empty": "Your embroidery preview will appear here.",
+      "canvasLabel": "Embroidery preview on {{fabric}} fabric",
+      "svgTextNote": "If the lettering looks different, convert text to outlines in your design software before exporting the SVG."
+    },
+    "status": {
+      "processing": "Processing…",
+      "done": "Your preview is ready.",
+      "previewUpdated": "Preview updated."
+    },
+    "errors": {
+      "fileType": "Choose an SVG, PNG, JPG, or WebP file with a matching file type.",
+      "svgFileSize": "SVG files must be no larger than 2 MB.",
+      "rasterFileSize": "PNG, JPG, and WebP files must be no larger than 5 MB.",
+      "svgUnsupported": "This SVG contains elements that aren't supported.",
+      "svgInvalid": "This is not a valid SVG file. It must start with an <svg> element.",
+      "svgDimensions": "The SVG needs a width and height or a valid viewBox.",
+      "svgRender": "The SVG preview could not be loaded or is empty. Convert text to outlines before exporting; filters and gradients may look different.",
+      "imageRead": "The image could not be loaded. Please try another file.",
+      "sample": "The sample image could not be loaded.",
+      "processing": "The preview could not be created. Please try another image.",
+      "download": "The preview could not be downloaded. Please try again."
+    },
+    "quoteButton": "Request a quote",
+    "emailNoteBefore": "For a more accurate quote, email your logo to",
+    "emailNoteAfter": ".",
+    "privacyNote": "Your image is processed in your browser and is not uploaded or stored."
+  },
+  "privacy": {
+    "title": "Privacy information",
+    "description": "This page is a placeholder for information about how Embrotech processes personal data. Add and review the final privacy information before publishing the website."
+  },
+  "examples": {
+    "title": "Embroidery examples",
+    "description": "A selection of embroidered designs on workwear and promotional textiles.",
+    "photoAlt": "{{title}} — {{angle}}",
+    "openPhoto": "View {{angle}}: {{title}}",
+    "gallery": {
+      "label": "Photo carousel: {{title}}",
+      "previous": "Previous photo",
+      "next": "Next photo",
+      "photoCounter": "{{current}} / {{total}}",
+      "photoAnnouncement": "Photo {{current}} of {{total}}"
+    },
+    "angles": {
+      "front": "Front",
+      "side": "Side",
+      "back": "Back",
+      "detail": "Detail"
+    },
+    "lightbox": {
+      "close": "Close photo",
+      "previous": "Previous photo",
+      "next": "Next photo",
+      "counter": "{{current}} / {{total}}"
+    },
+    "logoPlaceholder": "Client logo placeholder: {{clientName}}",
+    "empty": "There are no examples in this category yet.",
+    "priceDisclaimer": "Prices shown are examples and may vary depending on quantity, size, and stitch count.",
+    "priceNote": "Per piece, excluding VAT.",
+    "filters": {
+      "label": "Filter examples by garment",
+      "all": "All",
+      "tshirt": "T-shirts",
+      "cap": "Caps",
+      "jacket": "Jackets",
+      "other": "Other"
+    },
+    "garments": {
+      "tshirt": "T-shirt",
+      "cap": "Cap",
+      "jacket": "Jacket",
+      "other": "Other"
+    },
+    "details": {
+      "stitches": "Stitches",
+      "size": "Size"
+    },
+    "contact": {
+      "title": "Want something similar?",
+      "description": "Tell us about your idea and we can discuss embroidery for your textiles.",
+      "button": "Contact us"
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Home",
+      "description": "Our machine embroidery adds logos, lettering, and designs to workwear and promotional textiles, helping brands stand out.",
+      "cta": "Explore examples"
+    },
+    "about": {
+      "title": "About us",
+      "description": "Embrotech specializes in machine embroidery for workwear and promotional textiles, with careful attention to every design.",
+      "cta": "Contact us"
+    },
+    "production": {
+      "title": "Production",
+      "description": "We prepare each design for embroidery and stitch it onto the textile for a clean, durable finish.",
+      "cta": "Explore examples"
+    },
+    "examples": {
+      "title": "Examples",
+      "description": "Browse machine embroidery on workwear, promotional textiles, and a range of other products.",
+      "cta": "Ask about embroidery"
+    },
+    "news": {
+      "title": "News",
+      "description": "Read updates from Embrotech, discover embroidery possibilities, and learn more about textile decoration.",
+      "cta": "About Embrotech"
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Looking for machine embroidery on workwear or promotional textiles? Get in touch to discuss your design.",
+      "cta": "Explore examples"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist.",
+    "homeLink": "Go to the home page"
+  }
+}

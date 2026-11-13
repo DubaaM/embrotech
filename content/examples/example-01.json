@@ -1,0 +1,28 @@
+{
+  "title": {
+    "sk": "Výšivka na tričku",
+    "en": "Embroidered design on a T-shirt"
+  },
+  "description": {
+    "sk": "Ukážková výšivka na tričku s čistým spracovaním a zreteľnými detailmi na každodennom textile.",
+    "en": "A sample embroidered design on a T-shirt, showcasing neat stitching and clear detail on everyday fabric."
+  },
+  "clientName": "BMW",
+  "logo": "/uploads/logos/BMW-Logo.jpg",
+  "photos": [
+    {
+      "image": "/uploads/examples/BMW-front.jpg",
+      "angle": "front"
+    },
+    {
+      "image": "/uploads/examples/BMW-back.jpg",
+      "angle": "side"
+    }
+  ],
+  "garment": "tshirt",
+  "stitchCount": 5200,
+  "size": "8 x 5 cm",
+  "price": 1.25,
+  "order": 1,
+  "published": true
+}

@@ -1,0 +1,28 @@
+{
+  "title": {
+    "sk": "Výšivka na pracovnej bunde",
+    "en": "Embroidered design on a work jacket"
+  },
+  "description": {
+    "sk": "Ukážková výšivka na pracovnej bunde, ktorá vynikne a zároveň sa hodí na pravidelné nosenie.",
+    "en": "A sample embroidered design for a work jacket, made to stand out while remaining suitable for regular use."
+  },
+  "clientName": "Klient 03",
+  "logo": "/uploads/logos/Jack-Logo.jpg",
+  "photos": [
+    {
+      "image": "/uploads/examples/Jack-front.jpg",
+      "angle": "front"
+    },
+    {
+      "image": "/uploads/examples/Jack-back.jpg",
+      "angle": "side"
+    }
+  ],
+  "garment": "jacket",
+  "stitchCount": 9100,
+  "size": "10 x 7 cm",
+  "price": 2.4,
+  "order": 3,
+  "published": true
+}

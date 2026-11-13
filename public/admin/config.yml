@@ -1,0 +1,111 @@
+backend:
+  name: github
+  repo: DubaaM/embrotech
+  branch: main
+
+local_backend: true
+
+media_folder: public/uploads
+public_folder: /uploads
+locale: sk
+
+collections:
+  - name: examples
+    label: Ukážky
+    label_singular: Ukážka
+    folder: content/examples
+    create: true
+    extension: json
+    format: json
+    slug: "{{slug}}"
+    fields:
+      - label: Názov
+        name: title
+        widget: object
+        hint: Zadajte názov ukážky v slovenčine aj angličtine.
+        fields:
+          - label: Slovensky
+            name: sk
+            widget: string
+            hint: Slovenský názov ukážky.
+          - label: Anglicky
+            name: en
+            widget: string
+            hint: Anglický názov ukážky.
+      - label: Popis
+        name: description
+        widget: object
+        hint: Zadajte popis ukážky v slovenčine aj angličtine.
+        fields:
+          - label: Slovensky
+            name: sk
+            widget: text
+            hint: Slovenský popis ukážky.
+          - label: Anglicky
+            name: en
+            widget: text
+            hint: Anglický popis ukážky.
+      - label: Názov klienta
+        name: clientName
+        widget: string
+        hint: Zobrazovaný názov klienta.
+      - label: Logo klienta
+        name: logo
+        widget: image
+        hint: Nahrajte logo klienta alebo vyberte existujúci obrázok.
+      - label: Fotografie
+        name: photos
+        widget: list
+        hint: Pridajte fotografie ukážky a určte ich pohľad.
+        fields:
+          - label: Obrázok
+            name: image
+            widget: image
+            hint: Nahrajte fotografiu alebo vyberte existujúci obrázok.
+          - label: Pohľad
+            name: angle
+            widget: select
+            hint: Vyberte, ktorú stranu alebo detail fotografia zobrazuje.
+            options:
+              - label: Predná strana
+                value: front
+              - label: Bočná strana
+                value: side
+              - label: Zadná strana
+                value: back
+              - label: Detail
+                value: detail
+      - label: Typ odevu
+        name: garment
+        widget: select
+        hint: Vyberte hlavný typ odevu na ukážke.
+        options:
+          - label: Tričko
+            value: tshirt
+          - label: Šiltovka
+            value: cap
+          - label: Bunda
+            value: jacket
+          - label: Ostatné
+            value: other
+      - label: Počet stehov
+        name: stitchCount
+        widget: number
+        hint: Zadajte celkový počet stehov výšivky.
+      - label: Rozmer
+        name: size
+        widget: string
+        hint: Zadajte rozmer výšivky, napríklad 8 x 5 cm.
+      - label: Cena
+        name: price
+        widget: number
+        hint: Cena v eurách za kus bez DPH (euros per piece, excluding VAT).
+      - label: Poradie
+        name: order
+        widget: number
+        hint: Menšie číslo zobrazí ukážku skôr.
+      - label: Zverejnené
+        name: published
+        widget: boolean
+        default: true
+        hint: Určte, či sa ukážka zobrazí na stránke.
