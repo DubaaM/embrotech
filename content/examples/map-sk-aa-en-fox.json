@@ -1,6 +1,7 @@
 {
   "size": "4x5",
-  "price": -4,
+  "demo": true,
+  "price": 4,
   "logo": "/uploads/fox-creative-brand-logo-idea-vector.jpg",
   "published": true,
   "order": 4,
