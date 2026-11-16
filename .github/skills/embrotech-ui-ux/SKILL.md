@@ -1,6 +1,6 @@
 ---
 name: embrotech-ui-ux
-description: "Use when designing, implementing, or reviewing frontend pages and components for the Embrotech website, including responsive layouts, visual design systems, navigation, forms, and accessibility."
+description: "Use when designing, implementing, reviewing, or evolving the Embrotech website's frontend and brand experience, including structure, visual systems, navigation, forms, and accessibility."
 ---
 
 # Embrotech UI/UX
@@ -14,7 +14,11 @@ Design and implement clear, accessible frontend experiences for Embrotech's bili
 - The site supports Slovak and English with localized `/sk/...` and `/en/...` routes.
 - The project uses Vite, React with plain JavaScript, React Router, Tailwind CSS, and react-i18next.
 - Visible interface text belongs in `src/i18n/sk.json` and `src/i18n/en.json`.
-- Examples and news content belongs in `src/data/`, not in page components.
+- Route-level views belong in `src/pages/`; reusable and feature-specific UI belongs in `src/components/`.
+- CMS-managed examples and published content belong in root `content/`; `src/data/` is for data modules and content not managed through the CMS.
+- Shared stateful behavior belongs in `src/hooks/`; focused pure helpers belong in `src/utils/`; long-running processing belongs in `src/workers/`.
+- Imported source assets belong in `src/assets/`; static files and CMS uploads belong in `public/`, with CMS settings in `public/admin/`.
+- Keep this structure pragmatic: follow existing conventions, and add folders or abstractions only when they clarify ownership or reuse.
 - The site should be mobile-first, accessible, fast, and easy for a beginner to maintain.
 
 ## Workflow
@@ -39,7 +43,23 @@ Design and implement clear, accessible frontend experiences for Embrotech's bili
 - Keep imagery optimized and appropriately sized; lazy-load below-the-fold images when suitable.
 - Do not add ecommerce patterns, checkout language, invented pricing, or a price calculator.
 
+## Brand and design principles
+
+- Treat Embrotech's existing content, assets, translations, and user-provided facts as the source of truth. Do not invent brand colors, claims, testimonials, customers, prices, or company history.
+- For a refinement, preserve the current identity and behavior outside the requested scope. For a rebrand or major visual change, ask for approval before replacing the established direction.
+- Start from the audience and purpose of the specific page. Make layout, typography, color, imagery, and motion serve that purpose instead of applying a preset style.
+- Prefer a clear, distinctive idea over generic decoration. Use real, approved imagery; avoid stock or generated visuals that imply an untrue company, product, or customer.
+- Use motion and micro-interactions selectively, keep them responsive, and respect reduced-motion preferences. Content must remain readable throughout any animation.
+- Review the rendered result for hierarchy, accessibility, responsive behavior, performance, edge cases, and visual consistency before finishing.
+
 ## Sources and inspiration
 
-- [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) informs the design-system-first workflow: reason about the product and audience, then choose a suitable page pattern, visual style, palette, typography, effects, and UX checks. This skill adapts that approach to Embrotech rather than reproducing its catalogs or content.
-- [Claude Code](https://github.com/anthropics/claude-code) is a reference for an agentic coding workflow that works directly with a codebase. Apply the general inspect, implement, and verify discipline; this file does not install or configure Claude Code.
+- [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) informs design-system-first thinking: understand the audience and choose an appropriate page pattern, visual direction, and quality checks. Adapt the process to Embrotech rather than reproducing its catalogs or content.
+- [Claude Code](https://github.com/anthropics/claude-code) is a reference for an inspect, implement, and verify workflow that works directly with a codebase.
+- [emilkowalski/skills](https://github.com/emilkowalski/skills) informs purposeful motion, interaction feedback, animation performance, and removing motion that does not help.
+- [pbakaus/impeccable](https://github.com/pbakaus/impeccable) informs context-first design decisions and focused critique of usability, accessibility, responsiveness, and performance. Preserve Embrotech's identity when refining existing work.
+- [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) informs deliberate visual direction, content hierarchy, and thoughtful imagery. Adapt those principles to the brief and approved assets rather than importing a preset look.
+- [cofoundy/brand-skills](https://github.com/cofoundy/brand-skills) informs coherent brand strategy, voice, messaging, and guidelines. Use it to organize or audit user-provided brand information; do not generate or replace Embrotech's brand identity without approval.
+- [jhalsey87/MCP_NSF_Awards](https://github.com/jhalsey87/MCP_NSF_Awards) is an MCP server for NSF award data, not a frontend or brand-design skill. Consider it only for a specifically requested MCP/API integration.
+- These repositories are references, not source files to copy or install as a competing design system. Embrotech's requirements and existing patterns remain authoritative.
+

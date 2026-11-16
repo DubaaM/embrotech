@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, useLocation, useParams } from 'react-router-dom'
 import logo from '../assets/logo/Logo.jpg'
@@ -20,32 +20,78 @@ const navigationItems = [
 
 function NavigationLinks({ language, isMobile = false, onNavigate }) {
   const { t } = useTranslation()
+  const location = useLocation()
+  const indicatorRef = useRef(null)
 
-  return navigationItems.map(({ key, path }) => {
-    const localizedPath = typeof path === 'string' ? path : path[language]
+  useLayoutEffect(() => {
+    const indicator = indicatorRef.current
+    const nav = indicator?.parentElement
 
-    return (
-      <NavLink
-        end
-        key={key}
-        className={({ isActive }) =>
-          `group relative inline-flex ${
-            isMobile ? 'min-h-12 w-full' : 'min-h-10'
-          } items-center justify-center overflow-hidden rounded-lg px-3 py-2 text-sm font-semibold motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
-            isActive
-              ? 'bg-brand text-on-brand'
-              : 'bg-transparent text-text hover:bg-surface'
-          }`
-        }
-        onClick={onNavigate}
-        to={`/${language}${localizedPath ? `/${localizedPath}` : ''}`}
-      >
-        <span className="relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-current motion-safe:after:transition-transform motion-safe:after:duration-200 motion-safe:after:ease-out motion-safe:group-hover:after:scale-x-100 motion-reduce:after:transition-none">
-          {key === 'sandbox' ? t('sandbox.navLabel') : t(`navigation.${key}`)}
-        </span>
-      </NavLink>
-    )
-  })
+    if (!nav || !indicator) {
+      return undefined
+    }
+
+    const updateIndicator = () => {
+      const activeLink = nav.querySelector('[aria-current="page"]')
+
+      if (!activeLink) {
+        indicator.style.opacity = '0'
+        return
+      }
+
+      const navBounds = nav.getBoundingClientRect()
+      const linkBounds = activeLink.getBoundingClientRect()
+
+      indicator.style.width = `${linkBounds.width}px`
+      indicator.style.height = `${linkBounds.height}px`
+      indicator.style.transform = `translate3d(${linkBounds.left - navBounds.left}px, ${linkBounds.top - navBounds.top}px, 0)`
+      indicator.style.opacity = '1'
+    }
+
+    updateIndicator()
+
+    const resizeObserver = new ResizeObserver(updateIndicator)
+    resizeObserver.observe(nav)
+    window.addEventListener('resize', updateIndicator)
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', updateIndicator)
+    }
+  }, [language, location.pathname])
+
+  return (
+    <>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 top-0 z-0 rounded-lg bg-brand opacity-0 transition-[transform,width,height,opacity] duration-300 ease-out motion-reduce:transition-none"
+        ref={indicatorRef}
+      />
+      {navigationItems.map(({ key, path }) => {
+        const localizedPath = typeof path === 'string' ? path : path[language]
+
+        return (
+          <NavLink
+            end
+            key={key}
+            className={({ isActive }) =>
+              `group relative z-10 inline-flex ${
+                isMobile ? 'min-h-12 w-full' : 'min-h-10'
+              } items-center justify-center overflow-hidden rounded-lg bg-transparent px-3 py-2 text-sm font-semibold motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
+                isActive ? 'text-on-brand' : 'text-text hover:bg-surface'
+              }`
+            }
+            onClick={onNavigate}
+            to={`/${language}${localizedPath ? `/${localizedPath}` : ''}`}
+          >
+            <span className="relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-current motion-safe:after:transition-transform motion-safe:after:duration-200 motion-safe:after:ease-out motion-safe:group-hover:after:scale-x-100 motion-reduce:after:transition-none">
+              {key === 'sandbox' ? t('sandbox.navLabel') : t(`navigation.${key}`)}
+            </span>
+          </NavLink>
+        )
+      })}
+    </>
+  )
 }
 
 function LanguageSwitch({ language, getLanguagePath, onNavigate }) {
@@ -146,7 +192,7 @@ function Header() {
   }, [isMenuOpen])
 
   return (
-    <header className="glass-strong sticky top-0 z-30 border-b border-border">
+    <header className="glass-strong sticky top-3 z-30 mx-3 mt-3 rounded-2xl border border-border shadow-md">
       <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-x-3 px-4 py-4 md:grid-cols-[1fr_auto_1fr]">
         <Link
           className="inline-flex items-center gap-2 justify-self-start text-lg font-bold tracking-wide text-text sm:text-xl"
@@ -165,32 +211,33 @@ function Header() {
 
         <nav
           aria-label={t('navigation.label')}
-          className="hidden items-center justify-center gap-1 md:flex"
+          className="relative hidden items-center justify-center gap-1 md:flex"
         >
           <NavigationLinks language={language} />
         </nav>
 
-        <div className="hidden items-center justify-self-end gap-2 sm:gap-3 md:flex">
+        <div className="flex items-center justify-self-end gap-2 sm:gap-3">
           <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-          <LanguageSwitch
-            getLanguagePath={getLanguagePath}
-            language={language}
-            onNavigate={closeMenu}
+          <div className="hidden items-center gap-2 md:flex sm:gap-3">
+            <LanguageSwitch
+              getLanguagePath={getLanguagePath}
+              language={language}
+              onNavigate={closeMenu}
+            />
+          </div>
+          <MenuButton
+            buttonRef={menuButtonRef}
+            isOpen={isMenuOpen}
+            menuId={MOBILE_MENU_ID}
+            onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
           />
         </div>
-
-        <MenuButton
-          buttonRef={menuButtonRef}
-          isOpen={isMenuOpen}
-          menuId={MOBILE_MENU_ID}
-          onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
-        />
       </div>
 
       <nav
         aria-hidden={!isMenuOpen}
         aria-label={t('navigation.label')}
-        className={`glass-strong absolute left-0 top-full z-50 flex max-h-[calc(100dvh-4rem)] w-full flex-col items-center gap-2 overflow-y-auto border-b border-border px-4 py-4 shadow-lg md:hidden motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${
+        className={`glass-strong absolute left-0 top-full z-50 flex max-h-[calc(100dvh-4rem)] w-full flex-col items-center gap-2 overflow-y-auto rounded-2xl border border-border px-4 py-4 shadow-lg md:hidden motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${
           isMenuOpen
             ? 'visible translate-y-0 pointer-events-auto opacity-100'
             : 'invisible -translate-y-2 pointer-events-none opacity-0'
@@ -205,7 +252,6 @@ function Header() {
           onNavigate={closeMenu}
         />
         <div className="mt-2 flex w-full flex-wrap items-center justify-center gap-4 border-t border-border pt-4">
-          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
           <LanguageSwitch
             getLanguagePath={getLanguagePath}
             language={language}

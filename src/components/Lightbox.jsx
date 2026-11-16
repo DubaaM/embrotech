@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import './Lightbox.css'
 
 function Lightbox({
   photos,
@@ -95,17 +96,14 @@ function Lightbox({
       aria-hidden={!isOpen}
       aria-labelledby={captionId}
       aria-modal="true"
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-bg/95 p-4 motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none motion-reduce:delay-0 ${
-        isOpen
-          ? 'visible pointer-events-auto opacity-100 motion-safe:delay-0'
-          : 'invisible pointer-events-none opacity-0 motion-safe:delay-300'
-      }`}
+      className="lightbox fixed inset-0 z-[100] flex items-center justify-center bg-bg/95 p-4"
+      data-open={isOpen}
       inert={!isOpen}
       onClick={handleBackdropClick}
       role="dialog"
     >
       {currentPhoto && (
-        <div className="relative flex max-h-full w-full max-w-6xl items-center justify-center gap-2 sm:gap-6">
+        <div className="lightbox-content relative flex max-h-full w-full max-w-6xl items-center justify-center gap-2 sm:gap-6">
           <button
             aria-label={activeLabels.previous}
             className={`glass inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${

@@ -95,6 +95,43 @@
       "button": "Contact us"
     }
   },
+  "production": {
+    "title": "Our production",
+    "description": "Explore our four embroidery machines, shown here with placeholder photos and specifications.",
+    "openPhoto": "View photo: {{name}}",
+    "closePhoto": "Close photo",
+    "machines": {
+      "machine1": {
+        "name": "Embroidery machine 01",
+        "alt": "Illustrative photo of an embroidery machine, placeholder for machine 01",
+        "description": "This description is a placeholder for the first machine. Its details can be added here later.",
+        "specs": { "heads": "Heads: to be added", "needles": "Needles: to be added", "area": "Embroidery area: to be added", "speed": "Speed: to be added" }
+      },
+      "machine2": {
+        "name": "Embroidery machine 02",
+        "alt": "Illustrative photo of an embroidery machine, placeholder for machine 02",
+        "description": "This description is a placeholder for the second machine. Its details can be added here later.",
+        "specs": { "heads": "Heads: to be added", "needles": "Needles: to be added", "area": "Embroidery area: to be added", "speed": "Speed: to be added" }
+      },
+      "machine3": {
+        "name": "Embroidery machine 03",
+        "alt": "Illustrative photo of an embroidery machine, placeholder for machine 03",
+        "description": "This description is a placeholder for the third machine. Its details can be added here later.",
+        "specs": { "heads": "Heads: to be added", "needles": "Needles: to be added", "area": "Embroidery area: to be added", "speed": "Speed: to be added" }
+      },
+      "machine4": {
+        "name": "Embroidery machine 04",
+        "alt": "Illustrative photo of an embroidery machine, placeholder for machine 04",
+        "description": "This description is a placeholder for the fourth machine. Its details can be added here later.",
+        "specs": { "heads": "Heads: to be added", "needles": "Needles: to be added", "area": "Embroidery area: to be added", "speed": "Speed: to be added" }
+      }
+    },
+    "cta": {
+      "title": "Interested in embroidery?",
+      "description": "Let's discuss the possibilities for your textiles.",
+      "button": "Contact us"
+    }
+  },
   "contact": {
     "title": "Contact us",
     "description": "Tell us what you have in mind for embroidered workwear or promotional textiles. We will be happy to discuss your enquiry.",
@@ -272,6 +309,52 @@
       "title": "Want something similar?",
       "description": "Tell us about your idea and we can discuss embroidery for your textiles.",
       "button": "Contact us"
+    }
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "Embrotech",
+      "title": "About us",
+      "description": "We use machine embroidery to bring designs to workwear and promotional textiles."
+    },
+    "story": {
+      "eyebrow": "Who we are",
+      "title": "Embroidery with attention to detail",
+      "description": "At Embrotech, we machine-embroider logos, lettering and designs. We prepare each design with the textile and finished result in mind.",
+      "imageAlt": "Illustrative view of an embroidery machine with textiles under its stitching heads"
+    },
+    "stats": {
+      "title": "Numbers for illustration",
+      "exampleNotice": "These figures are examples only and do not represent actual company data.",
+      "items": {
+        "experience": "Years of experience",
+        "projects": "Completed projects",
+        "clients": "Customers"
+      }
+    },
+    "services": {
+      "title": "What we do",
+      "description": "Embroidery can bring a personal touch to different types of textiles.",
+      "items": {
+        "shirt": { "title": "T-shirts", "description": "Designs and logos on workwear and promotional T-shirts." },
+        "cap": { "title": "Caps", "description": "Embroidery that adds your design to a cap." },
+        "jacket": { "title": "Jackets", "description": "Embroidered details for work and company jackets." }
+      }
+    },
+    "values": {
+      "title": "How we work",
+      "description": "We consider both the finished design and how it will be used.",
+      "items": {
+        "quality": { "title": "Quality", "description": "Careful attention to the finished embroidery." },
+        "precision": { "title": "Precision", "description": "Attention to the details of each design." },
+        "individual": { "title": "Individual approach", "description": "A solution suited to the design and textile." }
+      }
+    },
+    "cta": {
+      "title": "Have a design in mind?",
+      "description": "Let's discuss the embroidery possibilities for your textiles.",
+      "button": "Contact us",
+      "tryButton": "Try it yourself"
     }
   },
   "pages": {

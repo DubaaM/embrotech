@@ -95,6 +95,43 @@
       "button": "Kontaktujte nás"
     }
   },
+  "production": {
+    "title": "Naša výroba",
+    "description": "Spoznajte naše štyri vyšívacie stroje, zatiaľ s ilustračnými fotografiami a technickými údajmi.",
+    "openPhoto": "Zobraziť fotografiu: {{name}}",
+    "closePhoto": "Zavrieť fotografiu",
+    "machines": {
+      "machine1": {
+        "name": "Vyšívací stroj 01",
+        "alt": "Ilustračná fotografia vyšívacieho stroja, miesto pre fotografiu stroja 01",
+        "description": "Tento text je miestom pre opis prvého stroja. Podrobnosti o ňom doplníme neskôr.",
+        "specs": { "heads": "Počet hláv: doplníme", "needles": "Počet ihiel: doplníme", "area": "Vyšívacia plocha: doplníme", "speed": "Rýchlosť: doplníme" }
+      },
+      "machine2": {
+        "name": "Vyšívací stroj 02",
+        "alt": "Ilustračná fotografia vyšívacieho stroja, miesto pre fotografiu stroja 02",
+        "description": "Tento text je miestom pre opis druhého stroja. Podrobnosti o ňom doplníme neskôr.",
+        "specs": { "heads": "Počet hláv: doplníme", "needles": "Počet ihiel: doplníme", "area": "Vyšívacia plocha: doplníme", "speed": "Rýchlosť: doplníme" }
+      },
+      "machine3": {
+        "name": "Vyšívací stroj 03",
+        "alt": "Ilustračná fotografia vyšívacieho stroja, miesto pre fotografiu stroja 03",
+        "description": "Tento text je miestom pre opis tretieho stroja. Podrobnosti o ňom doplníme neskôr.",
+        "specs": { "heads": "Počet hláv: doplníme", "needles": "Počet ihiel: doplníme", "area": "Vyšívacia plocha: doplníme", "speed": "Rýchlosť: doplníme" }
+      },
+      "machine4": {
+        "name": "Vyšívací stroj 04",
+        "alt": "Ilustračná fotografia vyšívacieho stroja, miesto pre fotografiu stroja 04",
+        "description": "Tento text je miestom pre opis štvrtého stroja. Podrobnosti o ňom doplníme neskôr.",
+        "specs": { "heads": "Počet hláv: doplníme", "needles": "Počet ihiel: doplníme", "area": "Vyšívacia plocha: doplníme", "speed": "Rýchlosť: doplníme" }
+      }
+    },
+    "cta": {
+      "title": "Máte záujem o výšivku?",
+      "description": "Porozprávajme sa o možnostiach výšivky pre váš textil.",
+      "button": "Kontaktujte nás"
+    }
+  },
   "contact": {
     "title": "Kontaktujte nás",
     "description": "Napíšte nám, akú výšivku hľadáte na pracovný alebo reklamný textil. Radi s vami preberieme váš dopyt.",
@@ -272,6 +309,52 @@
       "title": "Chceli by ste niečo podobné?",
       "description": "Povedzte nám o svojom nápade a preberieme možnosti výšivky na váš textil.",
       "button": "Kontaktujte nás"
+    }
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "Embrotech",
+      "title": "O nás",
+      "description": "Strojovou výšivkou premieňame motívy na súčasť pracovného a reklamného textilu."
+    },
+    "story": {
+      "eyebrow": "Kto sme",
+      "title": "Výšivka s dôrazom na detail",
+      "description": "V Embrotechu sa venujeme strojovému vyšívaniu log, nápisov a motívov. Každý návrh pripravujeme s ohľadom na textil a výsledné spracovanie.",
+      "imageAlt": "Ilustračný pohľad na vyšívací stroj a textil pod vyšívacími hlavami"
+    },
+    "stats": {
+      "title": "Čísla na ukážku",
+      "exampleNotice": "Tieto čísla sú iba príklady a nepredstavujú skutočné údaje o spoločnosti.",
+      "items": {
+        "experience": "Rokov skúseností",
+        "projects": "Dokončených prác",
+        "clients": "Zákazníkov"
+      }
+    },
+    "services": {
+      "title": "Čomu sa venujeme",
+      "description": "Výšivka môže doplniť rôzne druhy textilu.",
+      "items": {
+        "shirt": { "title": "Tričká", "description": "Motívy a logá na pracovných aj reklamných tričkách." },
+        "cap": { "title": "Šiltovky", "description": "Výšivka, ktorá doplní šiltovku o váš motív." },
+        "jacket": { "title": "Bundy", "description": "Označenie pracovných a firemných búnd výšivkou." }
+      }
+    },
+    "values": {
+      "title": "Ako pracujeme",
+      "description": "Pri každom motíve myslíme na výsledok aj jeho použitie.",
+      "items": {
+        "quality": { "title": "Kvalita", "description": "Dôraz na starostlivé spracovanie výšivky." },
+        "precision": { "title": "Presnosť", "description": "Pozornosť venovaná detailom každého motívu." },
+        "individual": { "title": "Individuálny prístup", "description": "Riešenie prispôsobené motívu a textilu." }
+      }
+    },
+    "cta": {
+      "title": "Máte vlastný motív?",
+      "description": "Porozprávajme sa o možnostiach výšivky pre váš textil.",
+      "button": "Kontaktujte nás",
+      "tryButton": "Vyskúšajte si to"
     }
   },
   "pages": {

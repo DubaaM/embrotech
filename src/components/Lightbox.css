@@ -1,0 +1,42 @@
+.lightbox {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease, visibility 0s linear 240ms;
+}
+
+.lightbox[data-open="true"] {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.lightbox-content {
+  opacity: 0;
+  transform: translateY(0.5rem) scale(0.98);
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.lightbox[data-open="true"] .lightbox-content {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@starting-style {
+  .lightbox[data-open="true"] {
+    opacity: 0;
+  }
+
+  .lightbox[data-open="true"] .lightbox-content {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox,
+  .lightbox-content {
+    transition: none;
+  }
+}

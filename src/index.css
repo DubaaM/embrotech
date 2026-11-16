@@ -34,6 +34,8 @@
   --brand: #D4621A;     /* orange */
   --on-brand: #2A1A0E;  /* text on orange buttons */
   --border: #E8D3B5;
+  --thread-lightness: 46%;
+  --thread-saturation: 45%;
   --bg-top: var(--bg);
   --bg-mid: color-mix(in srgb, var(--brand) 18%, var(--bg));
   --bg-bottom: color-mix(in srgb, var(--brand) 55%, var(--text));
@@ -58,6 +60,8 @@
   --brand: #D4621A;
   --on-brand: #2A1A0E;
   --border: #4D3420;
+  --thread-lightness: 65%;
+  --thread-saturation: 45%;
   --bg-top: #1A0F07;
   --bg-mid: var(--on-brand);
   --bg-bottom: color-mix(in srgb, var(--brand) 35%, var(--on-brand));
@@ -74,9 +78,14 @@
 
 :root[data-theme='dark'] .home-hero-contact,
 :root.dark .home-hero-contact {
-  border-color: #000;
-  background-color: #000;
-  color: #fff;
+  border-color: color-mix(in srgb, var(--brand) 65%, var(--glass-border));
+  background: color-mix(in srgb, var(--brand) 30%, transparent);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .home-hero-primary,
+:root.dark .home-hero-primary {
+  color: var(--text);
 }
 
 body {
@@ -174,14 +183,148 @@ body::after {
   background-color: transparent;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-reveal-ready [data-reveal]:not(.is-visible):not(:focus-within) {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  .scroll-reveal-ready [data-reveal] {
+    transition: opacity 500ms ease, transform 500ms ease;
+    transition-delay: calc(var(--reveal-order, 0) * 90ms);
+  }
+}
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: clamp(1.5rem, 3vw, 3rem);
+  background-color: var(--bg);
+}
+
+.home-hero::before,
+.home-hero::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background-position: center;
+  background-size: cover;
+}
+
+.home-hero::before {
+  background-image:
+    linear-gradient(90deg, rgb(254 243 226 / 0.96), rgb(254 243 226 / 0.8) 45%, rgb(254 243 226 / 0.08) 100%),
+    url("./assets/home/Light.jpg");
+}
+
+.home-hero::after {
+  background-image:
+    linear-gradient(90deg, rgb(26 15 7 / 0.96), rgb(26 15 7 / 0.8) 45%, rgb(26 15 7 / 0.08) 100%),
+    url("./assets/home/dark.jpg");
+  opacity: 0;
+  transition: opacity 400ms ease-in-out;
+}
+
+:root[data-theme='dark'] .home-hero::after,
+:root.dark .home-hero::after {
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .home-hero::before {
+    background-image:
+      linear-gradient(90deg, rgb(254 243 226 / 0.94), rgb(254 243 226 / 0.75)),
+      url("./assets/home/Light.jpg");
+  }
+
+  .home-hero::after {
+    background-image:
+      linear-gradient(90deg, rgb(26 15 7 / 0.94), rgb(26 15 7 / 0.75)),
+      url("./assets/home/dark.jpg");
+  }
+
+  .home-hero::before,
+  .home-hero::after {
+    background-position: center, 60% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero::after {
+    transition: none;
+  }
+}
+
 .home-hero-title {
-  text-shadow: 0 1px 4px rgb(0 0 0 / 0.15);
+  font-family: "Barlow Condensed", "Arial Narrow", ui-sans-serif, system-ui,
+    sans-serif;
+  font-size: clamp(2.75rem, 5.25vw, 5.25rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-shadow:
+    0 2px 3px rgb(0 0 0 / 0.28),
+    0 8px 14px rgb(0 0 0 / 0.2);
+}
+
+.home-hero-primary,
+.home-hero-contact {
+  border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--glass-border));
+  backdrop-filter: blur(12px) saturate(155%);
+  -webkit-backdrop-filter: blur(12px) saturate(155%);
+  box-shadow:
+    0 4px 16px color-mix(in srgb, var(--brand) 26%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 0.55);
+}
+
+.home-hero-primary {
+  background: color-mix(in srgb, var(--brand) 76%, transparent);
+  color: var(--on-brand);
+}
+
+.home-hero-contact {
+  border-color: color-mix(in srgb, var(--brand) 40%, var(--glass-border));
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+  color: var(--text);
+}
+
+.home-hero-primary:hover,
+.home-hero-contact:hover {
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--brand) 42%, transparent),
+    0 8px 18px rgb(42 26 14 / 0.2),
+    inset 0 1px 0 rgb(255 255 255 / 0.65);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .home-hero-primary,
+  .home-hero-contact {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .home-hero-primary {
+    background: var(--brand);
+  }
+
+  .home-hero-contact {
+    background: var(--surface);
+  }
+
+  :root[data-theme='dark'] .home-hero-contact,
+  :root.dark .home-hero-contact {
+    background: var(--surface);
+  }
 }
 
 .sewn-word-wrap {
   position: relative;
   display: inline-block;
   white-space: nowrap;
+  text-shadow: none;
 }
 
 .sewn-word-outline {
@@ -190,7 +333,7 @@ body::after {
   white-space: nowrap;
   color: transparent;
   pointer-events: none;
-  -webkit-text-stroke: 1px color-mix(in srgb, var(--muted) 35%, white);
+  -webkit-text-stroke: 1px var(--text);
 }
 
 .sewn-word {
@@ -202,71 +345,78 @@ body::after {
 
 .sewn-letter {
   display: inline-block;
-  animation-duration: 16.72s;
+  animation-duration: 28s;
   animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  animation-timing-function: steps(144, end);
   animation-delay: var(--letter-delay);
   animation-fill-mode: both;
 }
 
 .sewn-letter {
-  color: transparent;
-  background-image: repeating-linear-gradient(
-    45deg,
-    var(--brand) 0 1px,
-    color-mix(in srgb, var(--text) 65%, black) 1px 2px,
-    color-mix(in srgb, var(--text) 70%, white) 2px 3px
+  --thread-color: hsl(
+    var(--thread-hue) var(--thread-saturation) var(--thread-lightness)
   );
-  background-size: 3px 3px;
+
+  color: transparent;
+  background-image:
+    repeating-linear-gradient(
+      108deg,
+      color-mix(in srgb, var(--thread-color) 45%, white) 0 0.45px,
+      var(--thread-color) 0.45px 1.6px,
+      color-mix(in srgb, var(--thread-color) 72%, black) 1.6px 2px,
+      color-mix(in srgb, var(--thread-color) 25%, white) 2px 2.35px,
+      var(--thread-color) 2.35px 3.1px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--thread-color) 62%, white),
+      var(--thread-color) 48%,
+      color-mix(in srgb, var(--thread-color) 74%, black)
+    );
+  background-size: 3.1px 3.1px, 100% 100%;
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-stroke: 0.5px color-mix(in srgb, var(--brand) 65%, black);
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+  -webkit-text-stroke: 0.9px
+    color-mix(in srgb, var(--thread-color) 48%, var(--text));
+  will-change: clip-path;
   clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
   animation-name: sew-letter;
 }
 
 .sewn-outline-letter {
   display: inline-block;
-  opacity: 0.45;
+  color: var(--thread-color);
+  opacity: 0.65;
 }
 
 @supports not (background-clip: text) {
   .sewn-letter {
-    color: var(--brand);
+    color: var(--thread-color);
     background-image: none;
     -webkit-text-stroke: 0;
   }
 }
 
-/* 1.52s steps align the first fade with letter 8 and restart with the fifth's fade. */
+/* Fine thread bands stay stepped as the stitch travels across each letter. */
 @keyframes sew-letter {
   0% {
     clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
-    opacity: 0;
-    animation-timing-function: ease-in-out;
   }
 
-  9.09% {
+  8% {
     clip-path: polygon(0 0, 200% 0, 100% 100%, -100% 100%);
-    opacity: 1;
-    animation-timing-function: linear;
   }
 
-  63.64% {
+  67% {
     clip-path: polygon(0 0, 200% 0, 100% 100%, -100% 100%);
-    opacity: 1;
-    animation-timing-function: ease-in-out;
   }
 
-  72.73% {
+  75% {
     clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
-    opacity: 0;
   }
 
   100% {
     clip-path: polygon(-120% 0, -100% 0, -200% 100%, -220% 100%);
-    opacity: 0;
   }
 }
 
@@ -275,6 +425,7 @@ body::after {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     animation: none;
     opacity: 1;
+    will-change: auto;
   }
 }
 
