@@ -1,17 +1,17 @@
 import { renderEmbroidery } from '../utils/embroidery.js'
 
 self.addEventListener('message', (event) => {
-  const { data, height, options, preview = false, requestId, width } = event.data
+  const { data, height, options, output = 'fabric', preview = false, requestId, width } = event.data
 
   if (typeof OffscreenCanvas !== 'function') {
-    self.postMessage({ preview, requestId, type: 'fallback' })
+    self.postMessage({ output, preview, requestId, type: 'fallback' })
     return
   }
 
   try {
     const canvas = new OffscreenCanvas(width, height)
     if (typeof canvas.transferToImageBitmap !== 'function') {
-      self.postMessage({ preview, requestId, type: 'fallback' })
+      self.postMessage({ output, preview, requestId, type: 'fallback' })
       return
     }
 
@@ -25,12 +25,13 @@ self.addEventListener('message', (event) => {
     const bitmap = canvas.transferToImageBitmap()
 
     self.postMessage(
-      { bitmap, height, preview, requestId, type: 'result', width },
+      { bitmap, height, output, preview, requestId, type: 'result', width },
       [bitmap],
     )
   } catch (error) {
     self.postMessage({
       message: error instanceof Error ? error.message : String(error),
+      output,
       preview,
       requestId,
       type: 'error',

@@ -32,6 +32,8 @@
   --text: #2A1A0E;      /* dark brown */
   --muted: color-mix(in srgb, var(--text) 85%, var(--brand) 15%);
   --brand: #D4621A;     /* orange */
+  --stitch-color: var(--brand);
+  --stitch-highlight: #F6AE78;
   --on-brand: #2A1A0E;  /* text on orange buttons */
   --border: #E8D3B5;
   --thread-lightness: 46%;
@@ -98,7 +100,7 @@ body::before,
 body::after {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   content: "";
   pointer-events: none;
 }
@@ -142,14 +144,23 @@ body::after {
 
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
 .glass-strong {
   background: var(--glass-strong-bg);
+}
+
+.site-header,
+.site-footer {
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+@media (hover: hover) and (prefers-reduced-transparency: no-preference) {
+  :is(.glass, .glass-strong, .about-glass):hover:not(:has(:is(.glass, .glass-strong, .about-glass):hover)) {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -163,8 +174,8 @@ body::after {
 }
 
 @media (max-width: 768px) {
-  .glass,
-  .glass-strong {
+  .site-header,
+  .site-footer {
     backdrop-filter: blur(8px) saturate(140%);
     -webkit-backdrop-filter: blur(8px) saturate(140%);
   }
@@ -201,6 +212,15 @@ body::after {
   overflow: hidden;
   border-radius: clamp(1.5rem, 3vw, 3rem);
   background-color: var(--bg);
+}
+
+.background-stitch {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
 }
 
 .home-hero::before,
@@ -273,8 +293,6 @@ body::after {
 .home-hero-primary,
 .home-hero-contact {
   border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--glass-border));
-  backdrop-filter: blur(12px) saturate(155%);
-  -webkit-backdrop-filter: blur(12px) saturate(155%);
   box-shadow:
     0 4px 16px color-mix(in srgb, var(--brand) 26%, transparent),
     inset 0 1px 0 rgb(255 255 255 / 0.55);

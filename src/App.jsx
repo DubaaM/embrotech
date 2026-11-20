@@ -8,6 +8,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import i18n from './i18n'
+import BackgroundStitch from './components/BackgroundStitch'
 import Layout from './components/Layout'
 import AboutPage from './pages/AboutPage'
 import Contact from './pages/Contact'
@@ -40,6 +41,7 @@ function LocaleGate() {
 function App() {
   return (
     <BrowserRouter>
+      <BackgroundStitch />
       <Routes>
         <Route path="/" element={<Navigate to="/sk" replace />} />
         <Route path="/:language" element={<LocaleGate />}>

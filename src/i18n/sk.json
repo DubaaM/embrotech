@@ -250,10 +250,51 @@
       "processing": "Náhľad sa nepodarilo vytvoriť. Skúste iný obrázok.",
       "download": "Náhľad sa nepodarilo stiahnuť. Skúste to znova."
     },
+    "product": {
+      "next": "Ďalej: vyskúšať na produkte",
+      "back": "Späť na výšivku",
+      "title": "Vyskúšajte logo na tričku",
+      "productLabel": "Produkt",
+      "placementLabel": "Umiestnenie loga",
+      "sizeLabel": "Približná šírka loga: {{size}} cm",
+      "sizeNote": "Rozmery a proporcie produktu sú ilustračné, nejde o výrobné rozmery. Dostupnú veľkosť môže obmedziť tvar loga a umiestnenie.",
+      "dragInstructions": "Logo môžete presunúť na tričku alebo pomocou tlačidiel nižšie. Ľavá a pravá strana sú uvedené z pohľadu nositeľa.",
+      "preview3d": "3D náhľad trička",
+      "rotateInstructions": "Tričko otočíte ťahaním, priblížite kolieskom alebo gestom dvoch prstov a logo presuniete ťahaním. Môžete použiť aj tlačidlá nižšie.",
+      "rotateLabel": "Otočiť tričko",
+      "rotateLeft": "Otočiť doľava",
+      "rotateRight": "Otočiť doprava",
+      "zoomLabel": "Priblížiť tričko",
+      "zoomIn": "Priblížiť",
+      "zoomOut": "Oddialiť",
+      "loading3d": "Načítava sa 3D tričko…",
+      "moveLabel": "Posunúť logo",
+      "move": { "left": "Doľava", "right": "Doprava", "up": "Nahor", "down": "Nadol" },
+      "download": "Stiahnuť náhľad produktu",
+      "processing": "Pripravuje sa vyšívané logo…",
+      "restoring": "Obnovuje sa uložený náhľad…",
+      "previewLabel": "{{product}}, pohľad {{view}} s vyšívaným logom",
+      "products": { "tshirt": "Tričko", "cap": "Šiltovka", "jacket": "Bunda" },
+      "views": { "front": "spredu", "back": "zozadu", "left": "zľava", "right": "sprava" },
+      "placements": {
+        "leftChest": "Ľavá hruď", "centerChest": "Stred hrude", "rightChest": "Pravá hruď",
+        "upperBack": "Horná časť chrbta", "backNeck": "Zadná časť krku", "frontCenter": "Stred prednej časti",
+        "leftSide": "Ľavá strana", "rightSide": "Pravá strana", "backStrap": "Zadná časť nad remienkom",
+        "centerBack": "Stred chrbta", "leftSleeve": "Ľavý rukáv", "rightSleeve": "Pravý rukáv"
+      },
+      "errors": {
+        "viewer": "3D tričko sa nepodarilo zobraziť. Skontrolujte podporu WebGL vo svojom prehliadači a skúste to znova.",
+        "projection": "Logo sa na tomto mieste nepodarilo zobraziť. Presuňte ho alebo vyberte iné umiestnenie.",
+        "processing": "Vyšívané logo sa nepodarilo pripraviť. Vráťte sa späť a skúste to znova.",
+        "download": "Náhľad produktu sa nepodarilo stiahnuť. Skúste to znova.",
+        "storage": "Náhľad sa nepodarilo uložiť ani odstrániť z tohto zariadenia. Aktuálna relácia je naďalej dostupná.",
+        "restore": "Uložený náhľad sa nepodarilo obnoviť. Môžete začať znova."
+      }
+    },
     "quoteButton": "Požiadať o cenovú ponuku",
     "emailNoteBefore": "Pre presnejšiu cenovú ponuku pošlite logo na",
     "emailNoteAfter": ".",
-    "privacyNote": "Obrázok sa spracuje vo vašom prehliadači a neodošle sa ani neuloží."
+    "privacyNote": "Obrázok sa spracuje vo vašom prehliadači a spolu s nastaveniami uloží v tomto zariadení, aby ste sa k nemu mohli vrátiť po obnovení stránky. Neodosiela sa. Odstránite ho tlačidlom Resetovať alebo vymazaním údajov prehliadača."
   },
   "privacy": {
     "title": "Informácie o ochrane osobných údajov",

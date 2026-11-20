@@ -19,7 +19,7 @@ function MachineSection({ machine, reversed, onOpenImage }) {
         </button>
       </div>
       <div className="production-card-reveal" data-reveal style={{ '--reveal-order': 1 }}>
-        <GlassCard className="production-card" stitchTrail={false}>
+        <GlassCard className="production-card">
           <h2 id={titleId}>{t(machine.name)}</h2>
           <p>{t(machine.description)}</p>
           <SpecList specs={machine.specs} />

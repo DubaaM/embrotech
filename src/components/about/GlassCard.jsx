@@ -1,12 +1,6 @@
-import { useRef } from 'react'
-import useStitchTrail from '../../hooks/useStitchTrail'
 import './about.css'
 
-function GlassCard({ as: Element = 'div', children, className = '', surfaceClassName = 'about-glass', stitchTrail = true, onPointerMove, onPointerLeave, ...props }) {
-  const cardRef = useRef(null)
-  const canvasRef = useRef(null)
-  useStitchTrail(cardRef, canvasRef, stitchTrail)
-
+function GlassCard({ as: Element = 'div', children, className = '', surfaceClassName = 'about-glass', onPointerMove, onPointerLeave, ...props }) {
   function handlePointerMove(event) {
     if (event.pointerType === 'mouse' && window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
       const card = event.currentTarget
@@ -31,9 +25,8 @@ function GlassCard({ as: Element = 'div', children, className = '', surfaceClass
   }
 
   return (
-    <Element className={`interactive-glass ${surfaceClassName} ${className}`} ref={cardRef} onPointerLeave={handlePointerLeave} onPointerMove={handlePointerMove} {...props}>
+    <Element className={`interactive-glass ${surfaceClassName} ${className}`} onPointerLeave={handlePointerLeave} onPointerMove={handlePointerMove} {...props}>
       {children}
-      {stitchTrail && <canvas aria-hidden="true" className="about-glass-stitches" height="0" ref={canvasRef} width="0" />}
     </Element>
   )
 }

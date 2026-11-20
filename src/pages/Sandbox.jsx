@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 import sampleLogo from '../assets/sandbox/sample-logo.svg'
 import ColorEditor from '../components/sandbox/ColorEditor.jsx'
+import { sandboxProducts } from '../data/sandboxProducts.js'
 import {
   loadImageData,
   renderEmbroidery,
   resizeImageData,
 } from '../utils/embroidery.js'
 import { inspectSvgColors, replaceSvgColors } from '../utils/svgColors.js'
+import { cropEmbroidery } from '../utils/productPlacement.js'
+import { clearSandboxSession, readSandboxSession, saveSandboxSession } from '../utils/sandboxStorage.js'
+
+const ProductPreview = lazy(() => import('../components/sandbox/ProductPreview.jsx'))
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const MAX_SVG_FILE_SIZE = 2 * 1024 * 1024
@@ -36,6 +41,25 @@ const FABRICS = [
   { id: 'white', color: '#FFFFFF' },
   { id: 'brown', color: '#2A1A0E' },
 ]
+
+const INITIAL_PRODUCT_STATE = { product: 'tshirt', placement: 'leftChest', adjustments: {} }
+
+function restoreProductState(saved) {
+  const product = Object.hasOwn(sandboxProducts, saved?.product) ? saved.product : 'tshirt'
+  const placements = sandboxProducts[product].placements
+  const placement = Object.hasOwn(placements, saved?.placement) ? saved.placement : Object.keys(placements)[0]
+  const adjustments = {}
+  for (const [productId, definition] of Object.entries(sandboxProducts)) {
+    for (const placementId of Object.keys(definition.placements)) {
+      const key = `${productId}:${placementId}`
+      const value = saved?.adjustments?.[key]
+      if (value && [value.x, value.y, value.size].every(Number.isFinite)) {
+        adjustments[key] = { x: value.x, y: value.y, size: value.size }
+      }
+    }
+  }
+  return { product, placement, adjustments }
+}
 
 function validateFile(file, t) {
   const extension = file.name.split('.').pop()?.toLowerCase()
@@ -93,9 +117,16 @@ function Sandbox() {
   const [quality, setQuality] = useState('realistic')
   const [relief, setRelief] = useState(55)
   const [hasPreview, setHasPreview] = useState(false)
+  const [step, setStep] = useState('editor')
+  const [productState, setProductState] = useState(INITIAL_PRODUCT_STATE)
+  const [productArtwork, setProductArtwork] = useState(null)
+  const [productError, setProductError] = useState('')
+  const [storageReady, setStorageReady] = useState(false)
+  const [storageError, setStorageError] = useState('')
 
   const fileInputRef = useRef(null)
   const canvasRef = useRef(null)
+  const editorHeadingRef = useRef(null)
   const workerRef = useRef(null)
   const latestRequestRef = useRef(0)
   const uploadRequestRef = useRef(0)
@@ -106,8 +137,12 @@ function Sandbox() {
   const sourceImageDataRef = useRef(null)
   const optionsRef = useRef(null)
   const fallbackRenderRef = useRef(null)
+  const handleFileRef = useRef(null)
   const translateRef = useRef(t)
   const objectUrlRef = useRef('')
+  const productPendingRef = useRef(false)
+  const storageTimerRef = useRef(0)
+  const storageQueueRef = useRef(Promise.resolve())
 
   const selectedFabric = FABRICS.find((fabric) => fabric.id === fabricId)
 
@@ -115,6 +150,22 @@ function Sandbox() {
     console.error('Embroidery preview could not be rendered.', error)
     setErrorMessage(translateRef.current('sandbox.errors.processing'))
     setStatus('error')
+  }
+
+  function showProductError(error) {
+    console.error('The product embroidery layer could not be rendered.', error)
+    productPendingRef.current = false
+    setProductError(translateRef.current('sandbox.product.errors.processing'))
+  }
+
+  function queueStorage(action) {
+    storageQueueRef.current = storageQueueRef.current
+      .then(action)
+      .then(() => setStorageError(''))
+      .catch((error) => {
+        console.error('Sandbox storage could not be updated.', error)
+        setStorageError(translateRef.current('sandbox.product.errors.storage'))
+      })
   }
 
   function clearSvgColorEditor() {
@@ -128,7 +179,7 @@ function Sandbox() {
     setIsColorPreviewUpdate(false)
   }
 
-  function renderFallback(requestId, preview = false) {
+  function renderFallback(requestId, preview = false, output = 'fabric') {
     const imageData = sourceImageDataRef.current
     if (!imageData || requestId !== latestRequestRef.current) {
       return
@@ -139,7 +190,7 @@ function Sandbox() {
         imageData,
         preview ? PREVIEW_IMAGE_SIDE : FALLBACK_IMAGE_SIDE,
       )
-      const canvas = canvasRef.current
+      const canvas = output === 'product' ? document.createElement('canvas') : canvasRef.current
       if (!canvas) {
         return
       }
@@ -154,8 +205,14 @@ function Sandbox() {
       renderEmbroidery(context, smallerImage, {
         ...optionsRef.current,
         preview,
+        transparentBackground: output === 'product',
       })
       if (requestId === latestRequestRef.current) {
+        if (output === 'product') {
+          setProductArtwork(cropEmbroidery(canvas))
+          productPendingRef.current = false
+          return
+        }
         setHasPreview(true)
         if (!preview) {
           setStatus('done')
@@ -163,12 +220,15 @@ function Sandbox() {
       }
     } catch (error) {
       if (requestId === latestRequestRef.current) {
-        showProcessingError(error)
+        if (output === 'product') showProductError(error)
+        else showProcessingError(error)
       }
     }
   }
 
   function clearPreview() {
+    window.clearTimeout(storageTimerRef.current)
+    queueStorage(clearSandboxSession)
     clearSvgColorEditor()
     uploadRequestRef.current += 1
     latestRequestRef.current += 1
@@ -192,6 +252,11 @@ function Sandbox() {
     setQuality('realistic')
     setRelief(55)
     setHasPreview(false)
+    setStep('editor')
+    setProductState(INITIAL_PRODUCT_STATE)
+    setProductArtwork(null)
+    setProductError('')
+    productPendingRef.current = false
   }
 
   function beginReprocessing() {
@@ -257,11 +322,15 @@ function Sandbox() {
     }
   }
 
-  async function handleFile(file) {
+  async function handleFile(file, restored = null) {
     if (!file) {
-      return
+      return false
     }
 
+    if (!restored) {
+      window.clearTimeout(storageTimerRef.current)
+      queueStorage(clearSandboxSession)
+    }
     const wasSvgFile = isSvgFile
     clearSvgColorEditor()
     const uploadRequest = uploadRequestRef.current + 1
@@ -289,7 +358,7 @@ function Sandbox() {
       }
       setErrorMessage(validation.error)
       setStatus('error')
-      return
+      return false
     }
 
     setIsSvgFile(validation.isSvg)
@@ -297,6 +366,15 @@ function Sandbox() {
       setTreatWhiteAsBackground(false)
     } else if (wasSvgFile) {
       setTreatWhiteAsBackground(true)
+    }
+    if (restored?.options) {
+      const options = restored.options
+      setThreadColors(Number.isInteger(options.threadColors) && options.threadColors >= 2 && options.threadColors <= 8 ? options.threadColors : 4)
+      setFabricId(FABRICS.some((fabric) => fabric.id === options.fabricId) ? options.fabricId : 'cream')
+      setDensity([1, 2, 3].includes(options.density) ? options.density : 2)
+      setQuality(['simple', 'realistic'].includes(options.quality) ? options.quality : 'realistic')
+      setRelief(Number.isFinite(options.relief) && options.relief >= 0 && options.relief <= 100 ? options.relief : 55)
+      setTreatWhiteAsBackground(Boolean(options.treatWhiteAsBackground))
     }
 
     if (!validation.isSvg) {
@@ -308,24 +386,33 @@ function Sandbox() {
     setStatus('processing')
 
     try {
-      const { hasText, imageData } = await loadImageData(file)
+      const svgText = validation.isSvg ? await file.text() : ''
+      const replacements = validation.isSvg && restored?.colorReplacements && typeof restored.colorReplacements === 'object'
+        ? Object.fromEntries(Object.entries(restored.colorReplacements).filter(([key, value]) => /^#[0-9a-f]{6}$/i.test(key) && typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value)))
+        : {}
+      const editedFile = Object.keys(replacements).length
+        ? new File([replaceSvgColors(svgText, replacements)], file.name, { type: 'image/svg+xml' })
+        : file
+      const { hasText, imageData } = await loadImageData(editedFile)
       if (uploadRequest !== uploadRequestRef.current) {
-        return
+        return false
       }
 
       if (validation.isSvg) {
-        const svgText = await file.text()
         const colorInfo = inspectSvgColors(svgText)
         if (uploadRequest !== uploadRequestRef.current) {
-          return
+          return false
         }
         originalSvgTextRef.current = svgText
+        colorReplacementsRef.current = replacements
+        setColorReplacements(replacements)
         setSvgColorInfo(colorInfo)
         setPreviewUrl(createThumbnailUrl(imageData))
         setSvgHasText(hasText)
       }
       sourceImageDataRef.current = imageData
       setSourceImageData(imageData)
+      return true
     } catch (error) {
       if (uploadRequest === uploadRequestRef.current) {
         console.error('The selected image could not be loaded.', error)
@@ -337,6 +424,7 @@ function Sandbox() {
         setErrorMessage(t(errorKey))
         setStatus('error')
       }
+      return false
     }
   }
 
@@ -388,6 +476,7 @@ function Sandbox() {
     }
     translateRef.current = t
     fallbackRenderRef.current = renderFallback
+    handleFileRef.current = handleFile
   })
 
   useEffect(() => {
@@ -419,7 +508,7 @@ function Sandbox() {
         if (workerRef.current === worker) {
           workerRef.current = null
         }
-        fallbackRenderRef.current?.(result.requestId, result.preview)
+        fallbackRenderRef.current?.(result.requestId, result.preview, result.output)
         return
       }
 
@@ -429,11 +518,28 @@ function Sandbox() {
         if (workerRef.current === worker) {
           workerRef.current = null
         }
-        fallbackRenderRef.current?.(result.requestId, result.preview)
+        fallbackRenderRef.current?.(result.requestId, result.preview, result.output)
         return
       }
 
       if (result.type === 'result') {
+        if (result.output === 'product') {
+          try {
+            const canvas = document.createElement('canvas')
+            canvas.width = result.width
+            canvas.height = result.height
+            const context = canvas.getContext('2d')
+            if (!context) throw new Error('A 2D canvas context is unavailable for the product embroidery.')
+            context.drawImage(result.bitmap, 0, 0)
+            setProductArtwork(cropEmbroidery(canvas))
+            productPendingRef.current = false
+          } catch (error) {
+            showProductError(error)
+          } finally {
+            result.bitmap.close()
+          }
+          return
+        }
         const canvas = canvasRef.current
         const context = canvas?.getContext('2d')
         if (!canvas || !context) {
@@ -458,7 +564,7 @@ function Sandbox() {
         workerRef.current = null
       }
       worker.terminate()
-      fallbackRenderRef.current?.(latestRequestRef.current)
+      fallbackRenderRef.current?.(latestRequestRef.current, false, productPendingRef.current ? 'product' : 'fabric')
     })
 
     return () => {
@@ -527,12 +633,86 @@ function Sandbox() {
     treatWhiteAsBackground,
   ])
 
+  useEffect(() => {
+    if (step !== 'product' || status !== 'done' || !sourceImageData) return undefined
+
+    const requestId = latestRequestRef.current
+    productPendingRef.current = true
+    const worker = workerRef.current
+    if (!worker) {
+      fallbackRenderRef.current?.(requestId, false, 'product')
+      return undefined
+    }
+
+    try {
+      const data = sourceImageData.data.slice()
+      worker.postMessage({
+        data: data.buffer,
+        height: sourceImageData.height,
+        options: { ...optionsRef.current, transparentBackground: true },
+        output: 'product',
+        requestId,
+        width: sourceImageData.width,
+      }, [data.buffer])
+    } catch (error) {
+      console.error('The product embroidery request could not be sent.', error)
+      worker.terminate()
+      workerRef.current = null
+      fallbackRenderRef.current?.(requestId, false, 'product')
+    }
+    return () => { productPendingRef.current = false }
+  }, [step, status, sourceImageData])
+
+  useEffect(() => {
+    let cancelled = false
+    async function restoreSession() {
+      try {
+        const saved = await readSandboxSession()
+        if (cancelled || !saved) return
+        if (saved.version !== 1 || !(saved.file?.blob instanceof Blob) || typeof saved.file.name !== 'string' || typeof saved.file.type !== 'string') {
+          throw new Error('The saved sandbox session is invalid.')
+        }
+        const file = new File([saved.file.blob], saved.file.name, { type: saved.file.type })
+        const restored = await handleFileRef.current(file, saved)
+        if (cancelled || !restored) return
+        setProductState(restoreProductState(saved.productState))
+        setStep(saved.step === 'product' ? 'product' : 'editor')
+      } catch (error) {
+        if (!cancelled) {
+          console.error('The saved sandbox session could not be restored.', error)
+          setStorageError(translateRef.current('sandbox.product.errors.restore'))
+        }
+      } finally {
+        if (!cancelled) setStorageReady(true)
+      }
+    }
+    void restoreSession()
+    return () => { cancelled = true }
+  }, [])
+
+  useEffect(() => {
+    if (!storageReady || !sourceFile || !sourceImageData || status !== 'done') return undefined
+    const snapshot = {
+      version: 1,
+      file: { blob: sourceFile, name: sourceFile.name, type: sourceFile.type },
+      options: { threadColors, fabricId, density, treatWhiteAsBackground, quality, relief },
+      colorReplacements,
+      productState,
+      step,
+    }
+    storageTimerRef.current = window.setTimeout(() => {
+      queueStorage(() => saveSandboxSession(snapshot))
+    }, 500)
+    return () => window.clearTimeout(storageTimerRef.current)
+  }, [storageReady, sourceFile, sourceImageData, status, threadColors, fabricId, density, treatWhiteAsBackground, quality, relief, colorReplacements, productState, step])
+
   useEffect(
     () => () => {
       uploadRequestRef.current += 1
       colorRequestRef.current += 1
       latestRequestRef.current += 1
       window.clearTimeout(colorEditTimerRef.current)
+      window.clearTimeout(storageTimerRef.current)
       if (objectUrlRef.current) {
         URL.revokeObjectURL(objectUrlRef.current)
       }
@@ -605,9 +785,12 @@ function Sandbox() {
           <p className="mt-3 text-sm leading-6 text-muted">
             {t('sandbox.illustrationNote')}
           </p>
+          <p className="mt-3 text-sm leading-6 text-muted">{t('sandbox.privacyNote')}</p>
         </header>
 
-        <div className="mt-10 grid items-stretch gap-8 lg:grid-cols-2">
+        {!storageReady ? <p className="mt-6 text-center" role="status">{t('sandbox.product.restoring')}</p> : null}
+        {storageError ? <p className="mt-6 text-center text-sm" role="alert">{storageError}</p> : null}
+        <div className={storageReady && step === 'editor' ? 'mt-10 grid items-stretch gap-8 lg:grid-cols-2' : 'hidden'}>
           <section
             aria-labelledby="sandbox-upload-title"
             className="glass rounded-2xl p-6 sm:p-8"
@@ -905,7 +1088,7 @@ function Sandbox() {
             aria-labelledby="sandbox-result-title"
             className="glass rounded-2xl p-6 sm:p-8 lg:sticky lg:top-24 lg:self-start"
           >
-            <h2 className="text-xl font-bold text-text" id="sandbox-result-title">
+            <h2 className="text-xl font-bold text-text" id="sandbox-result-title" ref={editorHeadingRef} tabIndex="-1">
               {t('sandbox.result.title')}
             </h2>
             <p
@@ -950,6 +1133,18 @@ function Sandbox() {
               >
                 {t('sandbox.controls.download')}
               </button>
+              <button
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-surface px-5 py-2.5 font-semibold text-text motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:scale-105 motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={status !== 'done'}
+                onClick={() => {
+                  setProductArtwork(null)
+                  setProductError('')
+                  setStep('product')
+                }}
+                type="button"
+              >
+                {t('sandbox.product.next')}
+              </button>
               {status === 'done' ? (
                 <Link
                   className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-surface px-5 py-2.5 font-semibold text-text motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:scale-105 motion-safe:hover:shadow-md motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
@@ -975,9 +1170,21 @@ function Sandbox() {
           </section>
         </div>
 
-        <p className="glass mx-auto mt-7 max-w-3xl rounded-xl px-5 py-3 text-center text-sm leading-6 text-muted">
-          {t('sandbox.privacyNote')}
-        </p>
+        {storageReady && step === 'product' ? (
+          productArtwork && status === 'done' ? (
+            <Suspense fallback={<p role="status">{t('sandbox.product.loading3d')}</p>}>
+              <ProductPreview artwork={productArtwork} color={selectedFabric.color} onBack={() => {
+                setStep('editor')
+                window.requestAnimationFrame(() => editorHeadingRef.current?.focus())
+              }} onChange={setProductState} state={productState} />
+            </Suspense>
+          ) : (
+            <div className="glass mx-auto mt-10 max-w-2xl rounded-2xl p-6">
+              <p role={productError || status === 'error' ? 'alert' : 'status'}>{productError || (status === 'error' ? errorMessage : t('sandbox.product.processing'))}</p>
+              <button className="mt-4 min-h-11 rounded-lg border border-border bg-surface px-5 py-2 font-semibold" onClick={() => setStep('editor')} type="button">{t('sandbox.product.back')}</button>
+            </div>
+          )
+        ) : null}
       </div>
     </section>
   )

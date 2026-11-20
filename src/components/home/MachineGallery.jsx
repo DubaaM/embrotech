@@ -43,7 +43,7 @@ function MachineGallery() {
         <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:mt-12 lg:grid-cols-3">
           {machinePhotos.map((image, index) => (
             <div className="min-w-0" data-reveal key={image.id} style={{ '--reveal-order': index % 3 }}>
-              <GlassCard as="figure" className="home-gallery-card rounded-2xl p-2" stitchTrail={false} surfaceClassName="glass">
+              <GlassCard as="figure" className="home-gallery-card rounded-2xl p-2" surfaceClassName="glass">
                 <button
                   aria-label={t('home.gallery.openPhoto', {
                     caption: t(image.captionKey),

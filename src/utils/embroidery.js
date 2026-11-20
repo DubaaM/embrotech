@@ -947,7 +947,9 @@ function renderRealisticEmbroidery(context, masks, options) {
     throw new Error('A 2D canvas context is unavailable for the stitch height map.')
   }
 
-  drawRealisticFabric(context, options.fabricColor)
+  if (!options.transparentBackground) {
+    drawRealisticFabric(context, options.fabricColor)
+  }
   if (!masks.length) {
     return
   }
@@ -993,7 +995,9 @@ export function renderEmbroidery(context, imageData, options) {
   )
 
   if (options.quality === 'simple') {
-    drawFabricBackground(context, options.fabricColor)
+    if (!options.transparentBackground) {
+      drawFabricBackground(context, options.fabricColor)
+    }
     if (masks.length === 0) {
       return
     }

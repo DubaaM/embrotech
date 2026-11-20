@@ -192,7 +192,7 @@ function Header() {
   }, [isMenuOpen])
 
   return (
-    <header className="glass-strong sticky top-3 z-30 mx-3 mt-3 rounded-2xl border border-border shadow-md">
+    <header className="site-header glass-strong sticky top-3 z-30 mx-3 mt-3 rounded-2xl border border-border shadow-md">
       <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-x-3 px-4 py-4 md:grid-cols-[1fr_auto_1fr]">
         <Link
           className="inline-flex items-center gap-2 justify-self-start text-lg font-bold tracking-wide text-text sm:text-xl"

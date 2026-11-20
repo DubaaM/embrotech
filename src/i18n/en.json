@@ -250,10 +250,51 @@
       "processing": "The preview could not be created. Please try another image.",
       "download": "The preview could not be downloaded. Please try again."
     },
+    "product": {
+      "next": "Next: try on a product",
+      "back": "Back to embroidery",
+      "title": "Try your logo on a T-shirt",
+      "productLabel": "Product",
+      "placementLabel": "Logo placement",
+      "sizeLabel": "Approximate logo width: {{size}} cm",
+      "sizeNote": "Sizes and garment proportions are illustrative, not production measurements. The available size may be limited by the logo shape and placement.",
+      "dragInstructions": "Drag the logo on the shirt, or use the buttons below to move it. Left and right refer to the wearer.",
+      "preview3d": "3D T-shirt preview",
+      "rotateInstructions": "Drag the shirt to rotate it, scroll or pinch to zoom, and drag the logo to reposition it. You can also use the buttons below.",
+      "rotateLabel": "Rotate the T-shirt",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "zoomLabel": "Zoom the T-shirt",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "loading3d": "Loading the 3D T-shirt…",
+      "moveLabel": "Move the logo",
+      "move": { "left": "Move left", "right": "Move right", "up": "Move up", "down": "Move down" },
+      "download": "Download product preview",
+      "processing": "Preparing the embroidered logo…",
+      "restoring": "Restoring your saved preview…",
+      "previewLabel": "{{product}}, {{view}} view with embroidered logo",
+      "products": { "tshirt": "T-shirt", "cap": "Cap", "jacket": "Jacket" },
+      "views": { "front": "Front", "back": "Back", "left": "Left side", "right": "Right side" },
+      "placements": {
+        "leftChest": "Left chest", "centerChest": "Center chest", "rightChest": "Right chest",
+        "upperBack": "Upper back", "backNeck": "Back neck", "frontCenter": "Front center",
+        "leftSide": "Left side", "rightSide": "Right side", "backStrap": "Back above strap",
+        "centerBack": "Center back", "leftSleeve": "Left sleeve", "rightSleeve": "Right sleeve"
+      },
+      "errors": {
+        "viewer": "The 3D T-shirt could not be displayed. Check that your browser supports WebGL and try again.",
+        "projection": "The logo could not be placed at this position. Move it or choose another placement.",
+        "processing": "The embroidered logo could not be prepared. Go back and try again.",
+        "download": "The product preview could not be downloaded. Please try again.",
+        "storage": "The preview could not be saved or removed on this device. Your current session is still available.",
+        "restore": "The saved preview could not be restored. You can start again."
+      }
+    },
     "quoteButton": "Request a quote",
     "emailNoteBefore": "For a more accurate quote, email your logo to",
     "emailNoteAfter": ".",
-    "privacyNote": "Your image is processed in your browser and is not uploaded or stored."
+    "privacyNote": "Your image is processed in your browser and saved on this device with your settings so you can return after a refresh. It is not uploaded. Use Reset or clear your browser data to remove it."
   },
   "privacy": {
     "title": "Privacy information",
