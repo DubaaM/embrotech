@@ -1,18 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { sandboxProducts } from '../../data/sandboxProducts'
+import { DEFAULT_GARMENT_COLOR, GARMENT_VIEWER_SETTINGS, isValidGarmentColor } from '../../data/garmentViewerConfig.js'
 import { clampPlacement, getInitialPlacement, getSizeLimits } from '../../utils/productPlacement'
+import ColorPicker from './ColorPicker.jsx'
+import FullscreenButton from './FullscreenButton.jsx'
 import GarmentViewer from './GarmentViewer'
+import ViewerToolbar from './ViewerToolbar.jsx'
 
 const controlButtonClass = 'min-h-11 rounded-lg border border-border bg-surface px-3 text-sm font-semibold motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:scale-105 motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-50'
 
 function ProductPreview({ artwork, color, onBack, onChange, state }) {
   const { t } = useTranslation()
   const viewerRef = useRef(null)
+  const viewerHostRef = useRef(null)
+  const backButtonRef = useRef(null)
+  const fullscreenButtonRef = useRef(null)
   const titleRef = useRef(null)
   const [viewerStatus, setViewerStatus] = useState('loading')
   const [projectionError, setProjectionError] = useState(false)
   const [downloadError, setDownloadError] = useState('')
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false)
+  const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false)
+  const [autoRotate, setAutoRotate] = useState(GARMENT_VIEWER_SETTINGS.autoRotateByDefault)
   const product = sandboxProducts.tshirt
   const placement = product.placements[state.placement]
   const key = `tshirt:${state.placement}`
@@ -24,7 +34,61 @@ function ProductPreview({ artwork, color, onBack, onChange, state }) {
   )
   const limits = getSizeLimits(product, placement, artwork.aspectRatio)
   const sizeProgress = limits.max === limits.min ? 100 : ((value.size - limits.min) / (limits.max - limits.min)) * 100
+  const garmentColor = isValidGarmentColor(state.garmentColor)
+    ? state.garmentColor
+    : isValidGarmentColor(color) ? color : DEFAULT_GARMENT_COLOR
+  const isFullscreen = isNativeFullscreen || isPseudoFullscreen
   useEffect(() => { titleRef.current?.focus() }, [])
+
+  useEffect(() => {
+    function syncFullscreenState() {
+      setIsNativeFullscreen(document.fullscreenElement === viewerHostRef.current)
+      viewerRef.current?.resize()
+    }
+
+    document.addEventListener('fullscreenchange', syncFullscreenState)
+    return () => document.removeEventListener('fullscreenchange', syncFullscreenState)
+  }, [])
+
+  useEffect(() => {
+    if (!isPseudoFullscreen) return undefined
+    const previousOverflow = document.body.style.overflow
+    const fullscreenButton = fullscreenButtonRef.current
+    document.body.style.overflow = 'hidden'
+    const focusFrame = window.requestAnimationFrame(() => backButtonRef.current?.focus())
+
+    function handlePseudoKeyDown(event) {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setIsPseudoFullscreen(false)
+        return
+      }
+      if (event.key !== 'Tab') return
+      const focusable = viewerHostRef.current?.querySelectorAll('button:not(:disabled), input:not(:disabled), [tabindex]:not([tabindex="-1"])')
+      if (!focusable?.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handlePseudoKeyDown)
+    return () => {
+      window.cancelAnimationFrame(focusFrame)
+      window.removeEventListener('keydown', handlePseudoKeyDown)
+      document.body.style.overflow = previousOverflow
+      window.requestAnimationFrame(() => fullscreenButton?.focus())
+    }
+  }, [isPseudoFullscreen])
+
+  useEffect(() => {
+    viewerRef.current?.setAutoRotate(autoRotate)
+  }, [autoRotate, viewerStatus])
 
   function updateValue(next) {
     onChange({
@@ -34,6 +98,51 @@ function ProductPreview({ artwork, color, onBack, onChange, state }) {
         [key]: clampPlacement(product, placement, next, artwork.aspectRatio),
       },
     })
+  }
+
+  function updateGarmentColor(nextColor) {
+    onChange({ ...state, garmentColor: nextColor })
+  }
+
+  async function toggleFullscreen() {
+    const viewerHost = viewerHostRef.current
+    if (isFullscreen) {
+      if (document.fullscreenElement === viewerHost && document.exitFullscreen) {
+        try {
+          await document.exitFullscreen()
+        } catch (error) {
+          console.error('The garment viewer could not exit fullscreen.', error)
+        }
+      }
+      setIsPseudoFullscreen(false)
+      return
+    }
+
+    if (typeof viewerHost?.requestFullscreen === 'function' && typeof document.exitFullscreen === 'function') {
+      try {
+        await viewerHost.requestFullscreen()
+        return
+      } catch (error) {
+        console.error('Native fullscreen is unavailable for the garment viewer; using the page overlay instead.', error)
+      }
+    }
+    setIsPseudoFullscreen(true)
+  }
+
+  async function closeViewer() {
+    if (document.fullscreenElement === viewerHostRef.current && document.exitFullscreen) {
+      try {
+        await document.exitFullscreen()
+      } catch (error) {
+        console.error('The garment viewer could not exit fullscreen.', error)
+      }
+    }
+    setIsPseudoFullscreen(false)
+  }
+
+  async function backToEditor() {
+    await closeViewer()
+    onBack()
   }
 
   async function downloadProduct() {
@@ -95,28 +204,87 @@ function ProductPreview({ artwork, color, onBack, onChange, state }) {
         </div>
         {downloadError ? <p className="mt-3 text-sm text-text" role="alert">{downloadError}</p> : null}
       </div>
-      <div className="glass min-w-0 rounded-2xl p-6 motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-lg motion-reduce:transition-none sm:p-8">
-        <h3 className="font-semibold">{t('sandbox.product.preview3d')}</h3>
-        <p className="mt-2 text-sm text-muted">{t('sandbox.product.rotateInstructions')}</p>
-        <GarmentViewer artwork={artwork} color={color} label={t('sandbox.product.previewLabel', { product: t('sandbox.product.products.tshirt'), view: t(`sandbox.product.views.${placement.view}`) })} onError={() => setViewerStatus('error')} onMove={updateValue} onProjectionError={setProjectionError} onReady={() => setViewerStatus('ready')} placement={placement} value={value} viewerRef={viewerRef} />
-        {viewerStatus === 'loading' ? <p className="mt-3 text-sm" role="status">{t('sandbox.product.loading3d')}</p> : null}
-        {viewerStatus === 'error' ? <p className="mt-3 text-sm" role="alert">{t('sandbox.product.errors.viewer')}</p> : null}
-        {projectionError ? <p className="mt-3 text-sm" role="alert">{t('sandbox.product.errors.projection')}</p> : null}
-        <div aria-label={t('sandbox.product.rotateLabel')} className="mt-3 flex flex-wrap gap-2" role="group">
-          <button aria-label={t('sandbox.product.rotateLeft')} className={`${controlButtonClass} inline-flex size-11 items-center justify-center p-0`} disabled={viewerStatus !== 'ready'} onClick={() => viewerRef.current?.rotate(-1)} type="button">
-            <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5" /><path d="M4 9h10a6 6 0 0 1 0 12h-2" /></svg>
-          </button>
-          <button aria-label={t('sandbox.product.rotateRight')} className={`${controlButtonClass} inline-flex size-11 items-center justify-center p-0`} disabled={viewerStatus !== 'ready'} onClick={() => viewerRef.current?.rotate(1)} type="button">
-            <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5" /><path d="M20 9H10a6 6 0 0 0 0 12h2" /></svg>
-          </button>
+      <div
+        aria-label={isFullscreen ? t('sandbox.product.preview3d') : undefined}
+        aria-modal={isFullscreen ? 'true' : undefined}
+        className={isFullscreen
+          ? 'glass-strong fixed inset-0 z-[100] flex min-h-0 flex-col overflow-hidden rounded-none border-0 bg-bg/80 p-3 shadow-none backdrop-blur-2xl pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pl-[calc(0.75rem+env(safe-area-inset-left))] pr-[calc(0.75rem+env(safe-area-inset-right))] sm:pl-5 sm:pr-5 sm:pt-[calc(1.25rem+env(safe-area-inset-top))] sm:pb-[calc(1.25rem+env(safe-area-inset-bottom))]'
+          : 'glass min-w-0 rounded-2xl p-6 motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-lg motion-reduce:transition-none sm:p-8'}
+        ref={viewerHostRef}
+        role={isFullscreen ? 'dialog' : undefined}
+        tabIndex={isPseudoFullscreen ? -1 : undefined}
+      >
+        <div className="flex shrink-0 items-center justify-between gap-3">
+          {isFullscreen ? (
+            <button
+              aria-label={t('sandbox.product.viewer.backToEditor')}
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-bg/75 px-3 text-sm font-semibold text-text shadow-sm backdrop-blur-md motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:scale-105 motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              onClick={() => void backToEditor()}
+              ref={backButtonRef}
+              title={t('sandbox.product.viewer.backToEditor')}
+              type="button"
+            >
+              <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="m15 18-6-6 6-6M9 12h12" />
+              </svg>
+              <span>{t('sandbox.product.viewer.backToEditor')}</span>
+            </button>
+          ) : (
+            <div className="min-w-0">
+              <h3 className="font-semibold" id="sandbox-garment-viewer-title">{t('sandbox.product.preview3d')}</h3>
+              <p className="mt-2 text-sm text-muted">{t('sandbox.product.rotateInstructions')}</p>
+            </div>
+          )}
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            <FullscreenButton buttonRef={fullscreenButtonRef} isFullscreen={isFullscreen} onClick={() => void toggleFullscreen()} />
+            {isFullscreen ? (
+              <button
+                aria-label={t('sandbox.product.viewer.close')}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-border bg-bg/75 text-text shadow-sm backdrop-blur-md motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:scale-105 motion-safe:active:scale-95 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                onClick={() => void closeViewer()}
+                title={t('sandbox.product.viewer.close')}
+                type="button"
+              >
+                <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="m18 6-12 12M6 6l12 12" />
+                </svg>
+              </button>
+            ) : null}
+          </div>
         </div>
-        <div aria-label={t('sandbox.product.zoomLabel')} className="mt-3 flex flex-wrap gap-2" role="group">
-          <button aria-label={t('sandbox.product.zoomIn')} className={`${controlButtonClass} inline-flex size-11 items-center justify-center p-0`} disabled={viewerStatus !== 'ready'} onClick={() => viewerRef.current?.zoom(1)} type="button">
-            <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4M10.5 7.5v6M7.5 10.5h6" /></svg>
-          </button>
-          <button aria-label={t('sandbox.product.zoomOut')} className={`${controlButtonClass} inline-flex size-11 items-center justify-center p-0`} disabled={viewerStatus !== 'ready'} onClick={() => viewerRef.current?.zoom(-1)} type="button">
-            <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4M7.5 10.5h6" /></svg>
-          </button>
+        <div className={isFullscreen ? 'flex min-h-0 flex-1 flex-col gap-3 pt-3 lg:flex-row' : 'min-w-0'}>
+          <div className={`min-w-0 ${isFullscreen ? 'flex min-h-0 flex-1 flex-col' : 'flex flex-col'}`}>
+            <GarmentViewer
+              artwork={artwork}
+              className={isFullscreen ? 'min-h-0 flex-1' : 'mt-3 aspect-square w-full'}
+              color={garmentColor}
+              label={t('sandbox.product.previewLabel', { product: t('sandbox.product.products.tshirt'), view: t(`sandbox.product.views.${placement.view}`) })}
+              onError={() => setViewerStatus('error')}
+              onMove={updateValue}
+              onProjectionError={setProjectionError}
+              onReady={() => setViewerStatus('ready')}
+              placement={placement}
+              value={value}
+              viewerRef={viewerRef}
+            />
+            {viewerStatus === 'loading' ? <p className="mt-3 text-sm" role="status">{t('sandbox.product.loading3d')}</p> : null}
+            {viewerStatus === 'error' ? <p className="mt-3 text-sm" role="alert">{t('sandbox.product.errors.viewer')}</p> : null}
+            {projectionError ? <p className="mt-3 text-sm" role="alert">{t('sandbox.product.errors.projection')}</p> : null}
+            <div className="mt-3 flex shrink-0 justify-center">
+              <ViewerToolbar
+                autoRotate={autoRotate}
+                onReset={() => viewerRef.current?.resetCamera()}
+                onRotateLeft={() => viewerRef.current?.rotate(-1)}
+                onRotateRight={() => viewerRef.current?.rotate(1)}
+                onToggleAutoRotate={() => setAutoRotate((current) => !current)}
+                onZoomIn={() => viewerRef.current?.zoom(1)}
+                onZoomOut={() => viewerRef.current?.zoom(-1)}
+                viewerStatus={viewerStatus}
+              />
+            </div>
+            {!isFullscreen ? <ColorPicker onChange={updateGarmentColor} value={garmentColor} /> : null}
+          </div>
+          {isFullscreen ? <ColorPicker isFullscreen onChange={updateGarmentColor} value={garmentColor} /> : null}
         </div>
       </div>
     </section>

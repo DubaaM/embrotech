@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import sampleLogo from '../assets/sandbox/sample-logo.svg'
 import ColorEditor from '../components/sandbox/ColorEditor.jsx'
 import { sandboxProducts } from '../data/sandboxProducts.js'
+import { isValidGarmentColor } from '../data/garmentViewerConfig.js'
 import {
   loadImageData,
   renderEmbroidery,
@@ -58,7 +59,10 @@ function restoreProductState(saved) {
       }
     }
   }
-  return { product, placement, adjustments }
+  const garmentColor = isValidGarmentColor(saved?.garmentColor)
+    ? saved.garmentColor.toUpperCase()
+    : undefined
+  return { product, placement, adjustments, ...(garmentColor ? { garmentColor } : {}) }
 }
 
 function validateFile(file, t) {

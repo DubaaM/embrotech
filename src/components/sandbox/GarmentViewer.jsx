@@ -3,11 +3,12 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { GARMENT_VIEWER_SETTINGS } from '../../data/garmentViewerConfig.js'
 import { fromShirtPosition, getShirtRegion, SHIRT_REGION_WIDTH_CM, toShirtPosition } from '../../utils/shirtProjection.js'
 
 const MODEL_URL = `${import.meta.env.BASE_URL}models/sandbox/High+Neck+T-shirt.glb`
 
-function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionError, onReady, placement, value, viewerRef }) {
+function GarmentViewer({ artwork, className = '', color, label, onError, onMove, onProjectionError, onReady, placement, value, viewerRef }) {
   const containerRef = useRef(null)
   const sceneRef = useRef(null)
   const propsRef = useRef({ artwork, color, onError, onMove, onProjectionError, onReady, placement, value })
@@ -21,6 +22,20 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
       viewer.camera.position.copy(viewer.controls.target).add(offset)
       viewer.controls.update()
       viewer.render()
+    },
+    resetCamera() {
+      const viewer = sceneRef.current
+      if (!viewer) return
+      viewer.controls.target.set(0, 0, 0)
+      viewer.camera.position.set(0, 0.04, viewer.activeView === 'back' ? -GARMENT_VIEWER_SETTINGS.cameraDistance : GARMENT_VIEWER_SETTINGS.cameraDistance)
+      viewer.controls.update()
+      viewer.render()
+    },
+    setAutoRotate(enabled) {
+      sceneRef.current?.setAutoRotate(enabled)
+    },
+    resize() {
+      sceneRef.current?.resize()
     },
     zoom(direction) {
       const viewer = sceneRef.current
@@ -38,7 +53,7 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
     download() {
       const viewer = sceneRef.current
       if (!viewer?.ready) return Promise.reject(new Error('The 3D preview is not ready.'))
-      viewer.render()
+      viewer.render(true)
       return new Promise((resolve, reject) => {
         viewer.renderer.domElement.toBlob(
           (blob) => blob ? resolve(blob) : reject(new Error('The 3D preview PNG could not be created.')),
@@ -64,18 +79,18 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
       return undefined
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, GARMENT_VIEWER_SETTINGS.maxPixelRatio))
     renderer.setClearColor(0xf3e9dc)
     renderer.outputColorSpace = THREE.SRGBColorSpace
     container.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(35, 1, 0.01, 20)
-    camera.position.set(0, 0.04, 1.65)
+    camera.position.set(0, 0.04, GARMENT_VIEWER_SETTINGS.cameraDistance)
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enablePan = false
-    controls.minDistance = 0.8
-    controls.maxDistance = 3
+    controls.minDistance = GARMENT_VIEWER_SETTINGS.minZoomDistance
+    controls.maxDistance = GARMENT_VIEWER_SETTINGS.maxZoomDistance
     controls.minPolarAngle = Math.PI * 0.3
     controls.maxPolarAngle = Math.PI * 0.7
     scene.add(new THREE.HemisphereLight(0xffffff, 0x91857c, 2))
@@ -90,6 +105,7 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
     scene.add(decals)
     let model = null
     let body = null
+    let garmentMaterials = []
     let box = null
     let texture = null
     let textureUrl = ''
@@ -97,11 +113,46 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
     let activeView = ''
     let disposed = false
     let dragging = false
+    let activeColor = ''
+    let colorFrame = 0
+    let rotationFrame = 0
+    let viewer = null
+    let visibilityObserver = null
+    let themeObserver = null
     const raycaster = new THREE.Raycaster()
     const pointer = new THREE.Vector2()
 
-    function render() {
-      if (!disposed) renderer.render(scene, camera)
+    function render(force = false) {
+      if (!disposed && (force || (viewer?.visible && !document.hidden))) renderer.render(scene, camera)
+    }
+
+    function updateBodyColor(nextColor) {
+      if (!garmentMaterials.length || !nextColor) return
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!activeColor || reduceMotion) {
+        garmentMaterials.forEach((material) => material.color.set(nextColor))
+        activeColor = nextColor
+        render()
+        return
+      }
+      if (activeColor.toLowerCase() === nextColor.toLowerCase()) return
+      if (colorFrame) window.cancelAnimationFrame(colorFrame)
+      const startColors = garmentMaterials.map((material) => material.color.clone())
+      const targetColor = new THREE.Color(nextColor)
+      const startedAt = performance.now()
+      activeColor = nextColor
+
+      function animateColor(now) {
+        const progress = Math.min((now - startedAt) / GARMENT_VIEWER_SETTINGS.colorTransitionMs, 1)
+        garmentMaterials.forEach((material, index) => {
+          material.color.copy(startColors[index]).lerp(targetColor, progress)
+        })
+        render()
+        if (progress < 1) colorFrame = window.requestAnimationFrame(animateColor)
+        else colorFrame = 0
+      }
+
+      colorFrame = window.requestAnimationFrame(animateColor)
     }
 
     function clearDecals() {
@@ -156,18 +207,62 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
       render()
     }
 
+    function rotateFrame() {
+      rotationFrame = 0
+      if (disposed || !viewer?.visible || !viewer.autoRotate) return
+      controls.update()
+      rotationFrame = window.requestAnimationFrame(rotateFrame)
+    }
+
+    function syncAutoRotate() {
+      if (viewer?.visible && !document.hidden && viewer.autoRotate && !rotationFrame) {
+        rotationFrame = window.requestAnimationFrame(rotateFrame)
+      } else if ((!viewer?.visible || document.hidden || !viewer.autoRotate) && rotationFrame) {
+        window.cancelAnimationFrame(rotationFrame)
+        rotationFrame = 0
+      }
+    }
+
+    function handleDocumentVisibility() {
+      if (!document.hidden) render()
+      syncAutoRotate()
+    }
+
+    function setAutoRotate(enabled) {
+      if (!viewer) return
+      viewer.autoRotate = enabled
+      controls.autoRotate = enabled
+      syncAutoRotate()
+    }
+
+    function resetCamera() {
+      controls.target.set(0, 0, 0)
+      camera.position.set(0, 0.04, activeView === 'back' ? -GARMENT_VIEWER_SETTINGS.cameraDistance : GARMENT_VIEWER_SETTINGS.cameraDistance)
+      controls.update()
+      render()
+    }
+
+    function updateThemeBackground() {
+      const background = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
+      if (background) {
+        renderer.setClearColor(new THREE.Color(background))
+        render()
+      }
+    }
+
     function update() {
       if (!model || disposed) return
       const current = propsRef.current
       model.traverse((object) => {
         if (object.isMesh) {
-          object.material.color.set(current.color)
           object.material.metalness = 0
           object.material.roughness = 0.9
         }
       })
+      updateBodyColor(current.color)
       if (activeView !== current.placement.view) {
         activeView = current.placement.view
+        viewer.activeView = activeView
         const distance = camera.position.distanceTo(controls.target)
         camera.position.set(0, 0.04, activeView === 'back' ? -distance : distance)
         controls.update()
@@ -236,7 +331,7 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
       const width = container.clientWidth
       const height = container.clientHeight
       if (!width || !height) return
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, GARMENT_VIEWER_SETTINGS.maxPixelRatio))
       renderer.setSize(width, height)
       camera.aspect = width / height
       camera.updateProjectionMatrix()
@@ -257,11 +352,39 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
     canvas.addEventListener('pointercancel', endDrag)
     canvas.addEventListener('webglcontextlost', contextLost)
     controls.addEventListener('change', render)
+    document.addEventListener('visibilitychange', handleDocumentVisibility)
     const observer = new ResizeObserver(resize)
     observer.observe(container)
-    const viewer = { camera, controls, renderer, render, update, ready: false }
+    viewer = {
+      activeView,
+      autoRotate: false,
+      camera,
+      controls,
+      render,
+      renderer,
+      resetCamera,
+      resize,
+      setAutoRotate,
+      update,
+      visible: false,
+      ready: false,
+    }
     sceneRef.current = viewer
     resize()
+    updateThemeBackground()
+
+    themeObserver = new MutationObserver(updateThemeBackground)
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] })
+    if ('IntersectionObserver' in window) {
+      visibilityObserver = new IntersectionObserver(([entry]) => {
+        viewer.visible = entry.isIntersecting
+        if (viewer.visible) render()
+        syncAutoRotate()
+      })
+      visibilityObserver.observe(container)
+    } else {
+      viewer.visible = true
+    }
 
     new GLTFLoader().load(MODEL_URL, (gltf) => {
       if (disposed) {
@@ -277,6 +400,22 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
       body = model.getObjectByName('Cloth')
       if (!body || !body.getObjectByName('Cloth_mesh_3') || !body.getObjectByName('Cloth_mesh_24')) {
         console.error('The supplied shirt model has an unexpected structure.')
+        propsRef.current.onError()
+        return
+      }
+      const garmentMaterialSet = new Set()
+      body.traverse((object) => {
+        if (!object.isMesh) return
+        const materials = Array.isArray(object.material) ? object.material : [object.material]
+        materials.forEach((material) => {
+          if (material.name === GARMENT_VIEWER_SETTINGS.shirtFabricMaterialName && material.color) {
+            garmentMaterialSet.add(material)
+          }
+        })
+      })
+      garmentMaterials = [...garmentMaterialSet]
+      if (!garmentMaterials.length) {
+        console.error('The supplied shirt model has no matching fabric material.')
         propsRef.current.onError()
         return
       }
@@ -297,7 +436,12 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
       disposed = true
       sceneRef.current = null
       observer.disconnect()
+      visibilityObserver?.disconnect()
+      themeObserver?.disconnect()
+      if (colorFrame) window.cancelAnimationFrame(colorFrame)
+      if (rotationFrame) window.cancelAnimationFrame(rotationFrame)
       controls.dispose()
+      document.removeEventListener('visibilitychange', handleDocumentVisibility)
       canvas.removeEventListener('pointerdown', startDrag, true)
       canvas.removeEventListener('pointermove', moveDrag)
       canvas.removeEventListener('pointerup', endDrag)
@@ -316,7 +460,7 @@ function GarmentViewer({ artwork, color, label, onError, onMove, onProjectionErr
     }
   }, [])
 
-  return <div aria-label={label} className="mt-3 aspect-square w-full min-w-0 overflow-hidden rounded-xl" ref={containerRef} role="img" />
+  return <div aria-label={label} className={`min-w-0 overflow-hidden rounded-xl bg-bg ${className || 'mt-3 aspect-square w-full'}`} ref={containerRef} role="img" />
 }
 
 export default GarmentViewer
